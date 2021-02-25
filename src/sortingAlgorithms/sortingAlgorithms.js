@@ -17,3 +17,31 @@ export const mergeSort = array => {
     while (j < secondHalf.length) sortedArray.push(secondHalf[j++]);
     return sortedArray;
 };
+
+export const quickSort = array => {
+    if (array.length === 1) return array;
+    const sortedArray = [];
+
+    return sortedArray;
+};
+
+export const heapSort = array => {
+    if (array.length === 1) return array;
+    const sortedArray = [];
+
+    return sortedArray;
+};
+
+export const bubbleSort = array => {
+    if (array.length === 1) return array;
+    const sortedArray = [];
+
+    return sortedArray;
+};
+
+export const insertionSort = array => {
+    if (array.length === 1) return array;
+    const sortedArray = [];
+
+    return sortedArray;
+};
