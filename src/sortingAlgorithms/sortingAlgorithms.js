@@ -1,4 +1,4 @@
-
+/*
 export const mergeSort = (array) => {
     if (array.length === 1) return array;
     const middleIdx = Math.floor(array.length / 2);
@@ -18,6 +18,7 @@ export const mergeSort = (array) => {
     while (j < secondHalf.length) sortedArray.push(secondHalf[j++]);
     return sortedArray;
 };
+*/
 
 
 export function getMergeSortAnimations(array) {
@@ -103,11 +104,22 @@ export function getMergeSortAnimations(array) {
 
 
 export const quickSort = array => {
+    const animations = [];
     if (array.length === 1) return array;
     const sortedArray = [];
 
+
+
     return sortedArray;
 };
+
+
+function quickSortHelper(arr[], low, high)
+{
+
+
+};
+
 
 export const heapSort = array => {
     if (array.length === 1) return array;
