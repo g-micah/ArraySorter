@@ -1,6 +1,7 @@
 import React from 'react';
 import * as sortingAlgorithms from '../sortingAlgorithms/sortingAlgorithms.js';
 import './SortingVisualizer.css';
+import './bootstrap.css';
 
 
 // Change this value for the speed of the animations.
