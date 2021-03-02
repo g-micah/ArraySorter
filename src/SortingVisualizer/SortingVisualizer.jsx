@@ -5,10 +5,10 @@ import './bootstrap.css';
 
 
 // Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 200;
+const ANIMATION_SPEED_MS = 0.1;
 
 // Change this value for the number of bars (value) in the array.
-const NUMBER_OF_ARRAY_BARS = 150;
+const NUMBER_OF_ARRAY_BARS = 100;
 
 // This is the main color of the array bars.
 const UNSORTED_COLOR = 'lightblue';
@@ -46,7 +46,11 @@ export default class SortingVisualizer extends React.Component {
         for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
             array.push(randomIntFromInterval(30, 800));
         }
-        this.width = (100 / NUMBER_OF_ARRAY_BARS) - (0.22*NUMBER_OF_ARRAY_BARS);
+
+
+
+        this.width = (100 / NUMBER_OF_ARRAY_BARS);
+
         this.setState({array});
         //Clear all bars color
         this.clearBarsColor();
