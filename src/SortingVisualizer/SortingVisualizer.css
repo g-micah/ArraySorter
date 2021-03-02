@@ -1,17 +1,42 @@
-.array-container {
+.sorting-visualizer {
     position: absolute;
-    left: 50px;
-    padding-top: 1rem;
-    min-height: 30rem;
+    height: 100%;
+    width: 100%;
+    padding-top: 56px;
+}
+.array-container {
+    position: relative;
+}
+.container-fluid, .row {
+    height: 100%;
+    overflow: auto;
+}
+.table th {
+    border-top: 0 !important;
+    text-align: center;   
+    padding: 4px !important;
+}
+.table {
+    margin-bottom: 8px !important;
+}
+.btn {
+    margin: 2px;
 }
 
 .array-bar {
     width: 2px;
     background-color: blue;
     display: inline-block;
-    margin: 0 1px;
+    margin: 0 0.11vw;
 }
 
 body {
     background-color: darkslategray;
+
+}
+
+.btn-light
+{
+    background-color: black !important;
+    border-color: black !important;
 }

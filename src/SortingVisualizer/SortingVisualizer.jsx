@@ -8,9 +8,7 @@ import './bootstrap.css';
 const ANIMATION_SPEED_MS = 200;
 
 // Change this value for the number of bars (value) in the array.
-const NUMBER_OF_ARRAY_BARS = 15;
-
-const WIDTH = 10;
+const NUMBER_OF_ARRAY_BARS = 150;
 
 // This is the main color of the array bars.
 const UNSORTED_COLOR = 'lightblue';
@@ -33,8 +31,8 @@ export default class SortingVisualizer extends React.Component {
             sorting: false
         };
     }
-
     timer;
+    width;
 
     componentDidMount() {
         this.resetArray();
@@ -46,8 +44,9 @@ export default class SortingVisualizer extends React.Component {
         //Create new array and update visual
         const array = [];
         for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
-            array.push(randomIntFromInterval(50, 400));
+            array.push(randomIntFromInterval(30, 800));
         }
+        this.width = (100 / NUMBER_OF_ARRAY_BARS) - (0.22*NUMBER_OF_ARRAY_BARS);
         this.setState({array});
         //Clear all bars color
         this.clearBarsColor();
@@ -214,28 +213,55 @@ export default class SortingVisualizer extends React.Component {
         const {array} = this.state;
 
         return (
-            <div className="array-container">
-                {array.map((value, idx) => (
-                    <div
-                        className="array-bar"
-                        key={idx}
-                        style=
-                        {{
-                            backgroundColor: UNSORTED_COLOR,
-                            height: `${value}px`,
-                            width: `${WIDTH}px`
-                        }}
-                    ></div>
-                ))}
-                <br />
-                <button onClick={() => this.resetArray()}>Generate New Array</button>
-                <button onClick={() => this.testSortingAlgorithm()}>Check Sorting Algorithms</button>
-                <button className="sort-button" onClick={() => this.sort("bubble")}>Bubble Sort</button>
-                <button className="sort-button" onClick={() => this.sort("merge")}>Merge Sort</button>
-                <button className="sort-button" onClick={() => this.sort("quick")}>Quick Sort</button>
-                <button className="sort-button" onClick={() => this.sort("heap")}>Heap Sort</button>
-                <button className="sort-button" onClick={() => this.sort("insertion")}>Insertion Sort</button>
-            </div>
+            <section className="sorting-visualizer" id="sorting-visualizer">
+                <div className="container-fluid">
+                <div className="row justify-content-center d-flex">
+                <div className="array-container mt-auto table-responsive">
+                <table className="table text-align-center"><tbody>
+                <tr className="text-nowrap"><th scope="row">
+                    {array.map((value, idx) => (
+                        <div
+                            className="array-bar"
+                            key={idx}
+                            style=
+                            {{
+                                backgroundColor: UNSORTED_COLOR,
+                                height: `${value/10}vh`,
+                                width: `${this.width}vw`
+                            }}
+                        ></div>
+                    ))}
+                </th></tr>
+                <tr><th scope="row">
+                    <button type="button" className="btn btn-sm btn-light" onClick={() => this.resetArray()}>Generate New Array</button>
+                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("bubble")}>Bubble Sort</button>
+                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("merge")}>Merge Sort</button>
+                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("quick")}>Quick Sort</button>
+                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("heap")}>Heap Sort</button>
+                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("insertion")}>Insertion Sort</button>
+                </th></tr>
+                </tbody></table>
+                </div>
+                </div>
+                </div>
+
+                <nav className="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
+                <a className="navbar-brand" href="">Array Sorting Visualizer</a>
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarCollapse">
+                <div className="container">
+                    <ul className="navbar-nav mr-auto">
+                    <li className="nav-item active">
+                    <button type="button" className="btn btn-sm btn-light" onClick={() => this.testSortingAlgorithm()}>Check Sorting Algorithms</button>
+                        
+                    </li>
+                    </ul>
+                </div>
+                </div>
+                </nav>
+            </section> 
         );
     }
 }
