@@ -29,6 +29,7 @@ export default class SortingVisualizer extends React.Component {
 
         this.state = {
             array: [],
+            sorting: false
         };
     }
 
@@ -48,10 +49,9 @@ export default class SortingVisualizer extends React.Component {
         }
         this.setState({array});
         //Clear all bars color
-        const arrayBars = document.getElementsByClassName('array-bar');
-        for (let x = 0; x < arrayBars.length; x++) {
-            arrayBars[x].style.backgroundColor = UNSORTED_COLOR;
-        }
+        this.clearBarsColor();
+        //Enable sorting buttons
+        this.sortingButtonsEnabled(true);
     }
 
     cancelCurrentSort() {
@@ -63,10 +63,28 @@ export default class SortingVisualizer extends React.Component {
         }
     }
 
+    //clear all bars color
+    clearBarsColor() {
+        const arrayBars = document.getElementsByClassName('array-bar');
+        for (let x = 0; x < arrayBars.length; x++) {
+            arrayBars[x].style.backgroundColor = UNSORTED_COLOR;
+        }
+    }
+
+    sortingButtonsEnabled(value)
+    {
+        const sortButtons = document.getElementsByClassName('sort-button');
+        for (let i = 0; i < sortButtons.length; i++)
+        {
+            sortButtons[i].disabled = !value;
+        }
+    }
+
     sort(type){
-        this.cancelCurrentSort();
-
-
+        //Clear all bars color
+        this.clearBarsColor();
+        //Disable buttoms
+        this.sortingButtonsEnabled(false);
 
         switch(type)
         {
@@ -86,7 +104,6 @@ export default class SortingVisualizer extends React.Component {
                 this.insertionSort();
                 break;
         }
-
     }
 
     bubbleSort(){
@@ -125,6 +142,10 @@ export default class SortingVisualizer extends React.Component {
                 }
             }, i * ANIMATION_SPEED_MS);     
         }
+        //End of sorting animation
+        this.timer = setTimeout(() => {
+            this.sortingButtonsEnabled(true);
+        }, animations.length * ANIMATION_SPEED_MS);
         
         console.log(this.state.array);
         //this.forceUpdate();
@@ -208,11 +229,11 @@ export default class SortingVisualizer extends React.Component {
                 <br />
                 <button onClick={() => this.resetArray()}>Generate New Array</button>
                 <button onClick={() => this.testSortingAlgorithm()}>Check Sorting Algorithms</button>
-                <button onClick={() => this.sort("bubble")}>Bubble Sort</button>
-                <button onClick={() => this.sort("merge")}>Merge Sort</button>
-                <button onClick={() => this.sort("quick")}>Quick Sort</button>
-                <button onClick={() => this.sort("heap")}>Heap Sort</button>
-                <button onClick={() => this.sort("insertion")}>Insertion Sort</button>
+                <button className="sort-button" onClick={() => this.sort("bubble")}>Bubble Sort</button>
+                <button className="sort-button" onClick={() => this.sort("merge")}>Merge Sort</button>
+                <button className="sort-button" onClick={() => this.sort("quick")}>Quick Sort</button>
+                <button className="sort-button" onClick={() => this.sort("heap")}>Heap Sort</button>
+                <button className="sort-button" onClick={() => this.sort("insertion")}>Insertion Sort</button>
             </div>
         );
     }
