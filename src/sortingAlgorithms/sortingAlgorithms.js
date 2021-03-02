@@ -25,24 +25,20 @@ export function getBubbleSortAnimations(arr) {
   do {
     swapped = false;
       for (let j = 0; j < sortedIndex; j++) {
-        animations.push([j, j+1, true]);
-        if (arr[j] > arr[j + 1]) {
-          animations.push([j, j+1, false]);
-          animations.push([j, j+1, true]);
-          
-          let tmp = arr[j];
-          arr[j] = arr[j + 1];
-          arr[j + 1] = tmp;
-          swapped = true;
+        if (j == (sortedIndex-1)) {
+          animations.push([j, j+1, false, true]);
+          sortedIndex = sortedIndex-1;
+        } else {
+          animations.push([j, j+1, false, false]);
+          if (arr[j] > arr[j + 1]) {
+            animations.push([j, j+1, true, false]);
+            animations.push([j, j+1, false, false]);
+            let tmp = arr[j];
+            arr[j] = arr[j + 1];
+            arr[j + 1] = tmp;
+            swapped = true;
+          }
         }
-        
-        /*
-        if (j === sortedIndex - 1) {
-          
-        }
-        */
-
-
       }
   } while(swapped)
 
