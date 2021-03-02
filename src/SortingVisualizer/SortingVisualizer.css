@@ -1,7 +1,8 @@
 .array-container {
     position: absolute;
     left: 50px;
-    
+    padding-top: 1rem;
+    min-height: 30rem;
 }
 
 .array-bar {
@@ -9,4 +10,9 @@
     background-color: blue;
     display: inline-block;
     margin: 0 1px;
+}
+
+body {
+    background-color: darkslategray;
+    color: rgb(255, 27, 27);
 }
