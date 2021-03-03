@@ -5,10 +5,10 @@ import './bootstrap.css';
 
 
 // Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 0.1;
+const ANIMATION_SPEED_MS = 10;
 
 // Change this value for the number of bars (value) in the array.
-const NUMBER_OF_ARRAY_BARS = 100;
+const NUMBER_OF_ARRAY_BARS = 50;
 
 // This is the main color of the array bars.
 const UNSORTED_COLOR = 'lightblue';
@@ -24,14 +24,16 @@ const SWAP_COLOR = 'rgb(255, 27, 27)';
 export default class SortingVisualizer extends React.Component {
     constructor (props) {
         super(props);
-        this.timer = null;
+        this.timeouts = [];
+        this.sorting = false;
+        this.width = 0;
 
         this.state = {
             array: [],
-            sorting: false
         };
     }
-    timer;
+    timeouts;
+    sorting;
     width;
 
     componentDidMount() {
@@ -40,17 +42,16 @@ export default class SortingVisualizer extends React.Component {
 
     resetArray() {
         //End current sorting animation
-        this.cancelCurrentSort();
+        if(this.sorting)
+        {
+            this.cancelCurrentSort();
+        }
         //Create new array and update visual
         const array = [];
         for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
             array.push(randomIntFromInterval(30, 800));
         }
-
-
-
-        this.width = (100 / NUMBER_OF_ARRAY_BARS);
-
+        this.width = (75 / NUMBER_OF_ARRAY_BARS);
         this.setState({array});
         //Clear all bars color
         this.clearBarsColor();
@@ -59,16 +60,17 @@ export default class SortingVisualizer extends React.Component {
     }
 
     cancelCurrentSort() {
-        this.timer++;
-        while(this.timer--)
-        {
-            clearTimeout(this.timer);
-            console.log(true);
+        this.sorting = false;
+        for (var i = 0; i < this.timeouts.length; i++) {
+            clearTimeout(this.timeouts[i]);
+            console.log(this.timeouts[i]);
         }
+        this.timeouts = [];
     }
 
     //clear all bars color
     clearBarsColor() {
+
         const arrayBars = document.getElementsByClassName('array-bar');
         for (let x = 0; x < arrayBars.length; x++) {
             arrayBars[x].style.backgroundColor = UNSORTED_COLOR;
@@ -85,10 +87,14 @@ export default class SortingVisualizer extends React.Component {
     }
 
     sort(type){
+        this.sorting = true;
+        //Clear tiemouts array
+        this.timeouts = [];
         //Clear all bars color
         this.clearBarsColor();
         //Disable buttoms
         this.sortingButtonsEnabled(false);
+        console.log(type+" sort!");
 
         switch(type)
         {
@@ -107,6 +113,9 @@ export default class SortingVisualizer extends React.Component {
             case "insertion":
                 this.insertionSort();
                 break;
+            default:
+                console.log("ERROR: Sort not specified.");
+                break;
         }
     }
 
@@ -116,11 +125,11 @@ export default class SortingVisualizer extends React.Component {
             const arrayBars = document.getElementsByClassName('array-bar');
             const [barOneIdx, barTwoIdx, swapBars, sorted] = animations[i];
 
-            this.timer = setTimeout(() => {
+            this.timeouts.push(setTimeout(() => {
                 if (!swapBars){
-                    if (i != animations.length-1) {
+                    if (i !== animations.length-1) {
                         for (let x = 0; x < arrayBars.length; x++) {
-                            if (arrayBars[x].style.backgroundColor != SORTED_COLOR)
+                            if (arrayBars[x].style.backgroundColor !== SORTED_COLOR)
                             {
                                 if (sorted && (x === barOneIdx)) {
                                     arrayBars[x].style.backgroundColor = SORTED_COLOR;
@@ -132,8 +141,7 @@ export default class SortingVisualizer extends React.Component {
                             }
                         }
                     } else {
-                        for (let x = 0; x < arrayBars.length; x++)
-                        {
+                        for (let x = 0; x < arrayBars.length; x++) {
                             arrayBars[x].style.backgroundColor = SORTED_COLOR;
                         }
                     }
@@ -144,15 +152,15 @@ export default class SortingVisualizer extends React.Component {
                     arrayBars[barOneIdx].style.height = arrayBars[barTwoIdx].style.height;
                     arrayBars[barTwoIdx].style.height = tempHeight;
                 }
-            }, i * ANIMATION_SPEED_MS);     
+            }, i * ANIMATION_SPEED_MS));     
         }
         //End of sorting animation
-        this.timer = setTimeout(() => {
+        this.timeouts.push(setTimeout(() => {
             this.sortingButtonsEnabled(true);
-        }, animations.length * ANIMATION_SPEED_MS);
+            this.sorting = false;
+        }, animations.length * ANIMATION_SPEED_MS));
         
         console.log(this.state.array);
-        //this.forceUpdate();
     }
     
     mergeSort() {
@@ -196,15 +204,15 @@ export default class SortingVisualizer extends React.Component {
         for (let i = 0; i < 100; i++) {
             const array = [];
             const length = randomIntFromInterval(1, 1000);
-            for (let i = 0; i < length; i++) {
+            for (let j = 0; j < length; j++) {
                 array.push(randomIntFromInterval(-1000, 1000));
             }
             const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
-            const mergeSortedArray = sortingAlgorithms.getMergeSortAnimations(array.slice());
-            const quickSortedArray = sortingAlgorithms.quickSort(array.slice());
-            const heapSortedArray = sortingAlgorithms.heapSort(array.slice());
+            //const mergeSortedArray = sortingAlgorithms.getMergeSortAnimations(array.slice());
+            //const quickSortedArray = sortingAlgorithms.quickSort(array.slice());
+            //const heapSortedArray = sortingAlgorithms.heapSort(array.slice());
             const bubbleSortedArray = sortingAlgorithms.bubbleSort(array.slice());
-            const insertionSortedArray = sortingAlgorithms.insertionSort(array.slice());
+            //const insertionSortedArray = sortingAlgorithms.insertionSort(array.slice());
             //console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
             //console.log(arraysAreEqual(javaScriptSortedArray, quickSortedArray));
             //console.log(arraysAreEqual(javaScriptSortedArray, heapSortedArray));
@@ -236,6 +244,8 @@ export default class SortingVisualizer extends React.Component {
                         ></div>
                     ))}
                 </th></tr>
+                </tbody></table>
+                <table className="table text-align-center"><tbody>
                 <tr><th scope="row">
                     <button type="button" className="btn btn-sm btn-light" onClick={() => this.resetArray()}>Generate New Array</button>
                     <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("bubble")}>Bubble Sort</button>
@@ -250,7 +260,7 @@ export default class SortingVisualizer extends React.Component {
                 </div>
 
                 <nav className="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
-                <a className="navbar-brand" href="">Array Sorting Visualizer</a>
+                <a className="navbar-brand" href="#">Array Sorting Visualizer</a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
