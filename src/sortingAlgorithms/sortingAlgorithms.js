@@ -1,7 +1,6 @@
 export const bubbleSort = (arr) => {
   let len = arr.length;
   if (len === 1) return arr;
-  const sortedArray = [];
 
   for (let i = 0; i < len; i++) {
     for (let j = 0; j < len; j++) {
@@ -25,7 +24,7 @@ export function getBubbleSortAnimations(arr) {
   do {
     swapped = false;
       for (let j = 0; j < sortedIndex; j++) {
-        if (j == (sortedIndex-1)) {
+        if (j === (sortedIndex-1)) {
           animations.push([j, j+1, false, true]);
           sortedIndex = sortedIndex-1;
         } else {
@@ -213,7 +212,7 @@ function doMerge(
 
 
 export const quickSort = array => {
-  const animations = [];
+  //const animations = [];
   if (array.length === 1) return array;
   const sortedArray = [];
 
@@ -223,11 +222,6 @@ export const quickSort = array => {
 };
 
 
-function quickSortHelper(low, high)
-{
-
-
-};
 
 
 export const heapSort = array => {
