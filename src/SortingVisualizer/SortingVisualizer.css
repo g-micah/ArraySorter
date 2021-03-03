@@ -6,10 +6,10 @@
 }
 .array-container {
     position: relative;
+    padding-bottom: 8px;
 }
 .container-fluid, .row {
     height: 100%;
-    overflow: auto;
 }
 .table th {
     border-top: 0 !important;
@@ -17,27 +17,30 @@
     padding: 4px !important;
 }
 .table {
-    margin-bottom: 8px !important;
+    margin-bottom:0 !important;
 }
 .btn {
-    margin: 2px;
+    margin: 4px;
 }
 
 .array-bar {
     width: 2px;
-    background-color: blue;
     display: inline-block;
-    margin: 0 0.11vw;
+    margin: 0 1px;
 }
 
 body {
     background-color: darkslategray;
-
 }
 
 .btn-light
 {
-    background-color: gray !important;
-    border-color: gray !important;
-    color: white !important;
+    background-color: #E5E88D !important;
+    border-color: #E5E88D !important;
+    color: rgb(0, 0, 0) !important;
+}
+.btn-light:not(:disabled):not(.disabled):hover
+{
+    background-color: #fcffa4 !important;
+    border-color: #a1a363 !important;
 }
