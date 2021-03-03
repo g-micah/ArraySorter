@@ -4,11 +4,9 @@ import './SortingVisualizer.css';
 import './bootstrap.css';
 
 
-// Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 10;
 
 // Change this value for the number of bars (value) in the array.
-const NUMBER_OF_ARRAY_BARS = 50;
+const DEFAULT_ARRAY_SIZE = 15;
 
 // This is the main color of the array bars.
 const UNSORTED_COLOR = 'lightblue';
@@ -27,20 +25,35 @@ export default class SortingVisualizer extends React.Component {
         this.timeouts = [];
         this.sorting = false;
         this.width = 0;
-
-        this.state = {
+        
+        this.state = { 
             array: [],
-        };
+            arrSize: DEFAULT_ARRAY_SIZE
+        }
+        this.handleSizeChange = this.handleSizeChange.bind(this);
     }
     timeouts;
     sorting;
     width;
 
-    componentDidMount() {
-        this.resetArray();
+    handleSizeChange(event) {
+        const value = event.target.value;
+
+        this.setState(function(state) {
+            return {
+                arrSize: value
+            }
+        })
+
+        this.resetArray(value);
     }
 
-    resetArray() {
+    componentDidMount() {
+        this.resetArray(this.state.arrSize);
+
+    }
+
+    resetArray(size) {
         //End current sorting animation
         if(this.sorting)
         {
@@ -48,11 +61,11 @@ export default class SortingVisualizer extends React.Component {
         }
         //Create new array and update visual
         const array = [];
-        for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
+        for (let i = 0; i < parseInt(size); i++) {
             array.push(randomIntFromInterval(30, 800));
         }
-        this.width = (75 / NUMBER_OF_ARRAY_BARS);
-        this.setState({array});
+        this.width = (60 /  parseInt(size));
+        this.setState({array: array});
         //Clear all bars color
         this.clearBarsColor();
         //Enable sorting buttons
@@ -63,7 +76,6 @@ export default class SortingVisualizer extends React.Component {
         this.sorting = false;
         for (var i = 0; i < this.timeouts.length; i++) {
             clearTimeout(this.timeouts[i]);
-            console.log(this.timeouts[i]);
         }
         this.timeouts = [];
     }
@@ -101,6 +113,7 @@ export default class SortingVisualizer extends React.Component {
             case "bubble":
                 this.bubbleSort();
                 break;
+                /*
             case "merge":
                 this.mergeSort();
                 break;
@@ -113,14 +126,19 @@ export default class SortingVisualizer extends React.Component {
             case "insertion":
                 this.insertionSort();
                 break;
+                */
             default:
-                console.log("ERROR: Sort not specified.");
+                this.sorting = false;
+                this.sortingButtonsEnabled(true);
+                console.log("ERROR: Sort does not exist yet!");
                 break;
         }
     }
 
     bubbleSort(){
         const animations = sortingAlgorithms.getBubbleSortAnimations(this.state.array);
+        const speed = Math.pow(0.01/(this.state.arrSize), 2) * 500000000;
+        console.log('speed: '+speed+'\narrsize: '+this.state.arrSize);
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('array-bar');
             const [barOneIdx, barTwoIdx, swapBars, sorted] = animations[i];
@@ -152,18 +170,19 @@ export default class SortingVisualizer extends React.Component {
                     arrayBars[barOneIdx].style.height = arrayBars[barTwoIdx].style.height;
                     arrayBars[barTwoIdx].style.height = tempHeight;
                 }
-            }, i * ANIMATION_SPEED_MS));     
+            }, i * speed));     
         }
         //End of sorting animation
         this.timeouts.push(setTimeout(() => {
             this.sortingButtonsEnabled(true);
             this.sorting = false;
-        }, animations.length * ANIMATION_SPEED_MS));
+        }, animations.length * speed));
         
         console.log(this.state.array);
     }
     
     mergeSort() {
+        /*
         const animations = sortingAlgorithms.getMergeSortAnimations(this.state.array);
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('array-bar');
@@ -185,6 +204,7 @@ export default class SortingVisualizer extends React.Component {
                 }, i * ANIMATION_SPEED_MS);
             }
         }
+        */
     }
 
     quickSort(){
@@ -222,7 +242,7 @@ export default class SortingVisualizer extends React.Component {
     }
 
     render() {
-        const {array} = this.state;
+        const array = this.state.array;
 
         return (
             <section className="sorting-visualizer" id="sorting-visualizer">
@@ -247,7 +267,7 @@ export default class SortingVisualizer extends React.Component {
                 </tbody></table>
                 <table className="table text-align-center"><tbody>
                 <tr><th scope="row">
-                    <button type="button" className="btn btn-sm btn-light" onClick={() => this.resetArray()}>Generate New Array</button>
+                    <button type="button" className="btn btn-sm btn-light" onClick={() => this.resetArray(this.state.arrSize)}>Generate New Array</button>
                     <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("bubble")}>Bubble Sort</button>
                     <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("merge")}>Merge Sort</button>
                     <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("quick")}>Quick Sort</button>
@@ -259,20 +279,21 @@ export default class SortingVisualizer extends React.Component {
                 </div>
                 </div>
 
-                <nav className="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
-                <a className="navbar-brand" href="#">Array Sorting Visualizer</a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarCollapse">
+                <nav className="navbar fixed-top navbar-expand navbar-dark bg-dark py-1">
+                
                 <div className="container">
-                    <ul className="navbar-nav mr-auto">
-                    <li className="nav-item active">
-                    <button type="button" className="btn btn-sm btn-light" onClick={() => this.testSortingAlgorithm()}>Check Sorting Algorithms</button>
-                        
+                <a className="navbar-brand" href="#"><b>Array Sorter</b></a>
+                    <ul className="navbar-nav ml-auto">
+                    <li className="nav-item">
+                    <select className="form-select" value={this.state.arrSize} onChange={this.handleSizeChange}>
+                        <option value="8">Size: 8</option>
+                        <option value="15">Size: 15</option>
+                        <option value="35">Size: 35</option>
+                        <option value="80">Size: 80</option>
+                        <option value="200">Size: 200</option>
+                    </select>
                     </li>
                     </ul>
-                </div>
                 </div>
                 </nav>
             </section> 
