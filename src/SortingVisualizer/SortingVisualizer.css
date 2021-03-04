@@ -1,8 +1,8 @@
 .sorting-visualizer {
     position: absolute;
-    height: 100%;
+    height: 100% - 72px;
     width: 100%;
-    padding-top: 56px;
+
 }
 .array-container {
     position: relative;
@@ -49,6 +49,8 @@ body {
 }
 
 .form-select {
+    display: inline-block !important;
     padding-top: 3px !important;
     padding-bottom: 3px !important;
+    width: 150px !important;
 }

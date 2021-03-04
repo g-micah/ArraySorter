@@ -28,9 +28,11 @@ export default class SortingVisualizer extends React.Component {
         
         this.state = { 
             array: [],
-            arrSize: DEFAULT_ARRAY_SIZE
+            arrSize: DEFAULT_ARRAY_SIZE,
+            speedMultiplier: 1
         }
         this.handleSizeChange = this.handleSizeChange.bind(this);
+        this.handleSpeedChange = this.handleSpeedChange.bind(this);
     }
     timeouts;
     sorting;
@@ -47,6 +49,17 @@ export default class SortingVisualizer extends React.Component {
 
         this.resetArray(value);
     }
+
+    handleSpeedChange(event) {
+        const value = event.target.value;
+
+        this.setState(function(state) {
+            return {
+                speedMultiplier: value
+            }
+        })
+    }
+
 
     componentDidMount() {
         this.resetArray(this.state.arrSize);
@@ -246,6 +259,18 @@ export default class SortingVisualizer extends React.Component {
 
         return (
             <section className="sorting-visualizer" id="sorting-visualizer">
+
+                <nav className="navbar navbar-expand  navbar-dark bg-dark py-1">
+                <div className="container">
+                <a className="navbar-brand" href="#"><b>Array Sorter</b></a>
+                    <ul className="navbar-nav ml-auto">
+                    <li className="nav-item">
+
+                    </li>
+                    </ul>
+                </div>
+                </nav>
+
                 <div className="container-fluid">
                 <div className="row justify-content-center d-flex">
                 <div className="array-container mt-auto table-responsive">
@@ -268,6 +293,21 @@ export default class SortingVisualizer extends React.Component {
                 <table className="table text-align-center"><tbody>
                 <tr><th scope="row">
                     <button type="button" className="btn btn-sm btn-light" onClick={() => this.resetArray(this.state.arrSize)}>Generate New Array</button>
+                    <select className="form-select" value={this.state.speedMultiplier} onChange={this.handleSpeedChange}>
+                        <option value="0.25">Speed: 0.25x</option>
+                        <option value="0.5">Speed: 0.5x</option>
+                        <option value="1">Speed: 1x</option>
+                        <option value="2">Speed: 2x</option>
+                        <option value="4">Speed: 4x</option>
+                    </select>
+                    <select className="form-select" value={this.state.arrSize} onChange={this.handleSizeChange}>
+                        <option value="8">Size: 8</option>
+                        <option value="14">Size: 14</option>
+                        <option value="32">Size: 32</option>
+                        <option value="75">Size: 75</option>
+                        <option value="200">Size: 200</option>
+                    </select>
+                    
                     <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("bubble")}>Bubble Sort</button>
                     <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("merge")}>Merge Sort</button>
                     <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("quick")}>Quick Sort</button>
@@ -279,23 +319,7 @@ export default class SortingVisualizer extends React.Component {
                 </div>
                 </div>
 
-                <nav className="navbar fixed-top navbar-expand navbar-dark bg-dark py-1">
-                
-                <div className="container">
-                <a className="navbar-brand" href="#"><b>Array Sorter</b></a>
-                    <ul className="navbar-nav ml-auto">
-                    <li className="nav-item">
-                    <select className="form-select" value={this.state.arrSize} onChange={this.handleSizeChange}>
-                        <option value="8">Size: 8</option>
-                        <option value="15">Size: 15</option>
-                        <option value="35">Size: 35</option>
-                        <option value="80">Size: 80</option>
-                        <option value="200">Size: 200</option>
-                    </select>
-                    </li>
-                    </ul>
-                </div>
-                </nav>
+
             </section> 
         );
     }
