@@ -6,7 +6,7 @@ import './bootstrap.css';
 
 
 // Change this value for the number of bars (value) in the array.
-const DEFAULT_ARRAY_SIZE = 15;
+const DEFAULT_ARRAY_SIZE = 14;
 
 // This is the main color of the array bars.
 const UNSORTED_COLOR = 'lightblue';
@@ -29,10 +29,12 @@ export default class SortingVisualizer extends React.Component {
         this.state = { 
             array: [],
             arrSize: DEFAULT_ARRAY_SIZE,
-            speedMultiplier: 1
+            speedMultiplier: 1,
+            sortType: 'bubble'
         }
         this.handleSizeChange = this.handleSizeChange.bind(this);
         this.handleSpeedChange = this.handleSpeedChange.bind(this);
+        this.handleSortChange = this.handleSortChange.bind(this);
     }
     timeouts;
     sorting;
@@ -46,13 +48,11 @@ export default class SortingVisualizer extends React.Component {
                 arrSize: value
             }
         })
-
         this.resetArray(value);
     }
 
     handleSpeedChange(event) {
         const value = event.target.value;
-
         this.setState(function(state) {
             return {
                 speedMultiplier: value
@@ -60,6 +60,15 @@ export default class SortingVisualizer extends React.Component {
         })
     }
 
+    handleSortChange(event) {
+        const value = event.target.value;
+
+        this.setState(function(state) {
+            return {
+                sortType: value
+            }
+        })
+    }
 
     componentDidMount() {
         this.resetArray(this.state.arrSize);
@@ -258,68 +267,79 @@ export default class SortingVisualizer extends React.Component {
         const array = this.state.array;
 
         return (
-            <section className="sorting-visualizer" id="sorting-visualizer">
-
-                <nav className="navbar navbar-expand  navbar-dark bg-dark py-1">
-                <div className="container">
+            <section className="sorting-visualizer overflow-hidden" id="sorting-visualizer">
+                <nav className="navbar navbar-expand navbar-dark bg-dark">
+                <div className="container-sm">
                 <a className="navbar-brand" href="#"><b>Array Sorter</b></a>
                     <ul className="navbar-nav ml-auto">
                     <li className="nav-item">
-
+                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
+                    </li>
+                    <li className="nav-item">
+                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("bubble")}>Sort!</button>
                     </li>
                     </ul>
                 </div>
                 </nav>
-
-                <div className="container-fluid">
+                <div className="container">
                 <div className="row justify-content-center d-flex">
-                <div className="array-container mt-auto table-responsive">
+                <div className="table-responsive">
                 <table className="table text-align-center"><tbody>
                 <tr className="text-nowrap"><th scope="row">
-                    {array.map((value, idx) => (
-                        <div
-                            className="array-bar"
-                            key={idx}
-                            style=
-                            {{
-                                backgroundColor: UNSORTED_COLOR,
-                                height: `${value/10}vh`,
-                                width: `${this.width}vw`
-                            }}
-                        ></div>
-                    ))}
-                </th></tr>
-                </tbody></table>
-                <table className="table text-align-center"><tbody>
-                <tr><th scope="row">
-                    <button type="button" className="btn btn-sm btn-light" onClick={() => this.resetArray(this.state.arrSize)}>Generate New Array</button>
-                    <select className="form-select" value={this.state.speedMultiplier} onChange={this.handleSpeedChange}>
-                        <option value="0.25">Speed: 0.25x</option>
-                        <option value="0.5">Speed: 0.5x</option>
-                        <option value="1">Speed: 1x</option>
-                        <option value="2">Speed: 2x</option>
-                        <option value="4">Speed: 4x</option>
-                    </select>
-                    <select className="form-select" value={this.state.arrSize} onChange={this.handleSizeChange}>
-                        <option value="8">Size: 8</option>
-                        <option value="14">Size: 14</option>
-                        <option value="32">Size: 32</option>
-                        <option value="75">Size: 75</option>
-                        <option value="200">Size: 200</option>
-                    </select>
-                    
-                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("bubble")}>Bubble Sort</button>
-                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("merge")}>Merge Sort</button>
-                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("quick")}>Quick Sort</button>
-                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("heap")}>Heap Sort</button>
-                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("insertion")}>Insertion Sort</button>
+                    <div className="d-inline-block">
+                        <label htmlFor="type">Sort</label>
+                        <select className="form-select" id="type" value={this.state.sortType} onChange={this.handleSortChange}>
+                            <option value="bubble">Bubble Sort</option>
+                            <option value="merge">Merge Sort</option>
+                            <option value="quick">Quick Sort</option>
+                            <option value="heap">Heap Sort</option>
+                            <option value="insertion">Insertion Sort</option>
+                        </select>
+                    </div>
+                    <div className="d-inline-block">
+                        <label htmlFor="size">Size</label>
+                        <select className="form-select" id="size" value={this.state.arrSize} onChange={this.handleSizeChange}>
+                            <option value="8">8</option>
+                            <option value="14">14</option>
+                            <option value="32">32</option>
+                            <option value="75">75</option>
+                            <option value="200">200</option>
+                        </select>
+                    </div>
+                    <div className="d-inline-block">
+                        <label htmlFor="speed">Speed</label>
+                        <select className="form-select" id="speed" value={this.state.speedMultiplier} onChange={this.handleSpeedChange}>
+                            <option value="0.25">0.25x</option>
+                            <option value="0.5">0.5x</option>
+                            <option value="1">1x</option>
+                            <option value="2">2x</option>
+                            <option value="4">4x</option>
+                        </select>
+                    </div>
                 </th></tr>
                 </tbody></table>
                 </div>
+
+                <div className="array-container mt-auto table-responsive">
+                    <table className="table text-align-center"><tbody>
+                    <tr className="text-nowrap"><th scope="row">
+                        {array.map((value, idx) => (
+                            <div
+                                className="array-bar"
+                                key={idx}
+                                style=
+                                {{
+                                    backgroundColor: UNSORTED_COLOR,
+                                    height: `${value/10}vh`,
+                                    width: `${this.width}vw`
+                                }}
+                            ></div>
+                        ))}
+                    </th></tr>
+                    </tbody></table>
                 </div>
                 </div>
-
-
+                </div>
             </section> 
         );
     }
