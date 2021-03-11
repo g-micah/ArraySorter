@@ -23,15 +23,16 @@
 .table {
     margin-bottom:0 !important;
 }
+.d-inline-block {
+    margin: 0px 3px;
+}
 .d-inline-block label {
     color: white;
     margin: 1px 0px;
 }
 .d-inline-block select {
-    margin: 0px 2px;
     padding-top: 3px !important;
     padding-bottom: 3px !important;
-    width: 117px !important;
     text-align: center;
 
     background-color: #E5E88D !important;
@@ -76,6 +77,17 @@ select, label {
 .navbar-brand {
     padding-top: 0px !important;
     padding-bottom: 3px !important;
+    margin: 0 !important;
     
 }
+.navbar-nav {
+    margin-left: auto;
+}
 
+.type-select {
+    width: 151px;
+}
+
+.other-select {
+    width: 100px;
+}

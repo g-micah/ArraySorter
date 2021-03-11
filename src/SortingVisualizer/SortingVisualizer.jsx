@@ -32,17 +32,29 @@ export default class SortingVisualizer extends React.Component {
             speedMultiplier: 1,
             sortType: 'bubble'
         }
+        this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleSizeChange = this.handleSizeChange.bind(this);
         this.handleSpeedChange = this.handleSpeedChange.bind(this);
-        this.handleSortChange = this.handleSortChange.bind(this);
     }
     timeouts;
     sorting;
     width;
 
+    handleTypeChange(event) {
+        const value = event.target.value;
+        this.setState(function(state) {
+            return {
+                sortType: value
+            }
+        })
+        if (this.sorting)
+        {
+            this.resetArray(this.state.arrSize);
+        }
+    }
+
     handleSizeChange(event) {
         const value = event.target.value;
-
         this.setState(function(state) {
             return {
                 arrSize: value
@@ -60,19 +72,8 @@ export default class SortingVisualizer extends React.Component {
         })
     }
 
-    handleSortChange(event) {
-        const value = event.target.value;
-
-        this.setState(function(state) {
-            return {
-                sortType: value
-            }
-        })
-    }
-
     componentDidMount() {
         this.resetArray(this.state.arrSize);
-
     }
 
     resetArray(size) {
@@ -159,7 +160,8 @@ export default class SortingVisualizer extends React.Component {
 
     bubbleSort(){
         const animations = sortingAlgorithms.getBubbleSortAnimations(this.state.array);
-        const speed = Math.pow(0.01/(this.state.arrSize), 2) * 500000000;
+        const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
+
         console.log('speed: '+speed+'\narrsize: '+this.state.arrSize);
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('array-bar');
@@ -270,13 +272,13 @@ export default class SortingVisualizer extends React.Component {
             <section className="sorting-visualizer overflow-hidden" id="sorting-visualizer">
                 <nav className="navbar navbar-expand navbar-dark bg-dark">
                 <div className="container-sm">
-                <a className="navbar-brand" href="#"><b>Array Sorter</b></a>
-                    <ul className="navbar-nav ml-auto">
+                <div className="navbar-brand"><b>Array Sorter</b></div>
+                    <ul className="navbar-nav">
                     <li className="nav-item">
                     <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
                     </li>
                     <li className="nav-item">
-                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort("bubble")}>Sort!</button>
+                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort(this.state.sortType)}>Sort!</button>
                     </li>
                     </ul>
                 </div>
@@ -287,8 +289,8 @@ export default class SortingVisualizer extends React.Component {
                 <table className="table text-align-center"><tbody>
                 <tr className="text-nowrap"><th scope="row">
                     <div className="d-inline-block">
-                        <label htmlFor="type">Sort</label>
-                        <select className="form-select" id="type" value={this.state.sortType} onChange={this.handleSortChange}>
+                        <label htmlFor="type">Type</label>
+                        <select className="form-select type-select" id="type" value={this.state.sortType} onChange={this.handleTypeChange}>
                             <option value="bubble">Bubble Sort</option>
                             <option value="merge">Merge Sort</option>
                             <option value="quick">Quick Sort</option>
@@ -298,7 +300,7 @@ export default class SortingVisualizer extends React.Component {
                     </div>
                     <div className="d-inline-block">
                         <label htmlFor="size">Size</label>
-                        <select className="form-select" id="size" value={this.state.arrSize} onChange={this.handleSizeChange}>
+                        <select className="form-select other-select" id="size" value={this.state.arrSize} onChange={this.handleSizeChange}>
                             <option value="8">8</option>
                             <option value="14">14</option>
                             <option value="32">32</option>
@@ -308,12 +310,15 @@ export default class SortingVisualizer extends React.Component {
                     </div>
                     <div className="d-inline-block">
                         <label htmlFor="speed">Speed</label>
-                        <select className="form-select" id="speed" value={this.state.speedMultiplier} onChange={this.handleSpeedChange}>
-                            <option value="0.25">0.25x</option>
+                        <select className="form-select other-select sort-button" id="speed" value={this.state.speedMultiplier} onChange={this.handleSpeedChange}>
+                        <option value="0.1">0.1x</option>
+                            <option value="0.3">0.3x</option>
                             <option value="0.5">0.5x</option>
                             <option value="1">1x</option>
                             <option value="2">2x</option>
                             <option value="4">4x</option>
+                            <option value="8">8x</option>
+                            <option value="16">16x</option>
                         </select>
                     </div>
                 </th></tr>
