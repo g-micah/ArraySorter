@@ -87,7 +87,7 @@ export default class SortingVisualizer extends React.Component {
         for (let i = 0; i < parseInt(size); i++) {
             array.push(randomIntFromInterval(30, 800));
         }
-        this.width = (60 /  parseInt(size));
+        this.width = (90 /  parseInt(size));
         this.setState({array: array});
         //Clear all bars color
         this.clearBarsColor();
@@ -336,7 +336,7 @@ export default class SortingVisualizer extends React.Component {
                                 {{
                                     backgroundColor: UNSORTED_COLOR,
                                     height: `${value/10}vh`,
-                                    width: `${this.width}vw`
+                                    width: `calc(${this.width}% - 2px)`
                                 }}
                             ></div>
                         ))}
