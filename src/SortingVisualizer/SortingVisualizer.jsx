@@ -25,6 +25,7 @@ export default class SortingVisualizer extends React.Component {
         this.timeouts = [];
         this.sorting = false;
         this.width = 0;
+        this.barMargin = 1;
         
         this.state = { 
             array: [],
@@ -39,6 +40,7 @@ export default class SortingVisualizer extends React.Component {
     timeouts;
     sorting;
     width;
+    barMargin;
 
     handleTypeChange(event) {
         const value = event.target.value;
@@ -82,12 +84,26 @@ export default class SortingVisualizer extends React.Component {
         {
             this.cancelCurrentSort();
         }
-        //Create new array and update visual
+        //Create new arrays and update visual
         const array = [];
         for (let i = 0; i < parseInt(size); i++) {
             array.push(randomIntFromInterval(30, 800));
         }
-        this.width = (90 /  parseInt(size));
+        this.width = (94 /  parseInt(size));
+        if(size <= 10){
+            this.barMargin = 10;
+        } else if (size <= 20) {
+            this.barMargin = 6;
+        } else if (size <= 40) {
+            this.barMargin = 3;
+        } else if (size <= 80) {
+            this.barMargin = 1.5;
+        } else if (size <= 150) {
+            this.barMargin = 1;
+        } else {
+            this.barMargin = 0.5;
+        }
+            
         this.setState({array: array});
         //Clear all bars color
         this.clearBarsColor();
@@ -305,6 +321,7 @@ export default class SortingVisualizer extends React.Component {
                             <option value="14">14</option>
                             <option value="32">32</option>
                             <option value="75">75</option>
+                            <option value="130">150</option>
                             <option value="200">200</option>
                         </select>
                     </div>
@@ -336,7 +353,8 @@ export default class SortingVisualizer extends React.Component {
                                 {{
                                     backgroundColor: UNSORTED_COLOR,
                                     height: `${value/10}vh`,
-                                    width: `calc(${this.width}% - 2px)`
+                                    width: `max(calc(${this.width}% - ${this.barMargin*2}px), 1px)`,
+                                    margin: `0px ${this.barMargin}px`
                                 }}
                             ></div>
                         ))}
