@@ -178,7 +178,6 @@ export default class SortingVisualizer extends React.Component {
         const animations = sortingAlgorithms.getBubbleSortAnimations(this.state.array);
         const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
 
-        console.log('speed: '+speed+'\narrsize: '+this.state.arrSize);
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('array-bar');
             const [barOneIdx, barTwoIdx, swapBars, sorted] = animations[i];
@@ -217,8 +216,6 @@ export default class SortingVisualizer extends React.Component {
             this.sortingButtonsEnabled(true);
             this.sorting = false;
         }, animations.length * speed));
-        
-        console.log(this.state.array);
     }
     
     mergeSort() {
@@ -269,14 +266,14 @@ export default class SortingVisualizer extends React.Component {
             }
             const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
             //const mergeSortedArray = sortingAlgorithms.getMergeSortAnimations(array.slice());
-            //const quickSortedArray = sortingAlgorithms.quickSort(array.slice());
+            const quickSortedArray = sortingAlgorithms.quickSort(array.slice(), 0, array.length - 1);
             //const heapSortedArray = sortingAlgorithms.heapSort(array.slice());
             const bubbleSortedArray = sortingAlgorithms.bubbleSort(array.slice());
             //const insertionSortedArray = sortingAlgorithms.insertionSort(array.slice());
             //console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
-            //console.log(arraysAreEqual(javaScriptSortedArray, quickSortedArray));
+            console.log(arraysAreEqual(javaScriptSortedArray, quickSortedArray));
             //console.log(arraysAreEqual(javaScriptSortedArray, heapSortedArray));
-            console.log(arraysAreEqual(javaScriptSortedArray, bubbleSortedArray));
+            //console.log(arraysAreEqual(javaScriptSortedArray, bubbleSortedArray));
             //console.log(arraysAreEqual(javaScriptSortedArray, insertionSortedArray));
         }
     }
@@ -290,6 +287,9 @@ export default class SortingVisualizer extends React.Component {
                 <div className="container-sm">
                 <div className="navbar-brand"><b>Array Sorter</b></div>
                     <ul className="navbar-nav">
+                    <li className="nav-item">
+                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithm()}>BIGTEST</button>
+                    </li>
                     <li className="nav-item">
                     <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
                     </li>
