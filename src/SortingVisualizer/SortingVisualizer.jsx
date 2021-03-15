@@ -268,7 +268,7 @@ export default class SortingVisualizer extends React.Component {
             //const mergeSortedArray = sortingAlgorithms.getMergeSortAnimations(array.slice());
             const quickSortedArray = sortingAlgorithms.quickSort(array.slice(), 0, array.length - 1);
             //const heapSortedArray = sortingAlgorithms.heapSort(array.slice());
-            const bubbleSortedArray = sortingAlgorithms.bubbleSort(array.slice());
+            //const bubbleSortedArray = sortingAlgorithms.bubbleSort(array.slice());
             //const insertionSortedArray = sortingAlgorithms.insertionSort(array.slice());
             //console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
             console.log(arraysAreEqual(javaScriptSortedArray, quickSortedArray));
@@ -287,9 +287,7 @@ export default class SortingVisualizer extends React.Component {
                 <div className="container-sm">
                 <div className="navbar-brand"><b>Array Sorter</b></div>
                     <ul className="navbar-nav">
-                    <li className="nav-item">
-                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithm()}>BIGTEST</button>
-                    </li>
+
                     <li className="nav-item">
                     <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
                     </li>
@@ -367,6 +365,7 @@ export default class SortingVisualizer extends React.Component {
         );
     }
 }
+//<button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithm()}>BIGTEST</button>
 
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
