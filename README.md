@@ -1,3 +1,10 @@
+# About
+
+NOTICE: Currently only Bubble Sort works
+
+I created this web app because I wanted some more experience with a javascript framework. I had the idea to view a few array sorting algorithms on a screen to easily see what they do. 
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
