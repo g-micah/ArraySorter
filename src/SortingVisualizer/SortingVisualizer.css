@@ -31,16 +31,25 @@
     margin: 1px 0px;
 }
 .d-inline-block select {
-    padding-top: 3px !important;
-    padding-bottom: 3px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
     text-align: center;
+    margin-bottom: 2px;
 
     background-color: #E5E88D !important;
     border-color: #E5E88D !important;
 }
+.type-select {
+    width: 151px;
+}
+
+.other-select {
+    width: 100px;
+}
+
 .btn {
     margin: 0px 4px;
-    padding: 3px 12px !important;
+    padding: 2px 12px !important;
     font-weight: 500 !important;
 }
 
@@ -84,10 +93,3 @@ select, label {
     margin-left: auto;
 }
 
-.type-select {
-    width: 151px;
-}
-
-.other-select {
-    width: 100px;
-}
