@@ -3,7 +3,8 @@ import * as sortingAlgorithms from '../sortingAlgorithms/sortingAlgorithms.js';
 import './SortingVisualizer.css';
 import './bootstrap.css';
 
-
+// This is the default sort type selected
+const DEFAULT_SORT_TYPE = 'quick';
 
 // Change this value for the number of bars (value) in the array.
 const DEFAULT_ARRAY_SIZE = 14;
@@ -33,7 +34,7 @@ export default class SortingVisualizer extends React.Component {
             array: [],
             arrSize: DEFAULT_ARRAY_SIZE,
             speedMultiplier: 1,
-            sortType: 'bubble'
+            sortType: DEFAULT_SORT_TYPE
         }
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleSizeChange = this.handleSizeChange.bind(this);
@@ -89,7 +90,7 @@ export default class SortingVisualizer extends React.Component {
         //Create new arrays and update visual
         const array = [];
         for (let i = 0; i < parseInt(size); i++) {
-            array.push(randomIntFromInterval(30, 800));
+            array.push(randomIntFromInterval(20, 825));
         }
         this.width = (94 /  parseInt(size));
         if(size <= 10){
@@ -182,8 +183,9 @@ export default class SortingVisualizer extends React.Component {
      * Animation 3D array use:
      * [index1, index2, doSwap?, isSorted?]
      * 
-     * if doSwap: 
-     *
+     * if doSwap:   Swap values at 2 indexes
+     * if isSorted: Set index1 through index2 color to sorted
+     * else:        Highlight both indexes
      */
     displayAnimations(animations){
         const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
@@ -198,7 +200,7 @@ export default class SortingVisualizer extends React.Component {
                         for (let x = 0; x < arrayBars.length; x++) {
                             if (arrayBars[x].style.backgroundColor !== SORTED_COLOR)
                             {
-                                if (sorted && (x === barOneIdx)) {
+                                if (sorted && (x >= barOneIdx) && (x <= barTwoIdx)) {
                                     arrayBars[x].style.backgroundColor = SORTED_COLOR;
                                 } else if (x === barOneIdx || x === barTwoIdx){
                                     arrayBars[x].style.backgroundColor = SELECTED_COLOR;
@@ -250,6 +252,8 @@ export default class SortingVisualizer extends React.Component {
         }
     }
 
+
+//<button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithm()}>ALGORITHM-TEST</button>
     render() {
         const array = this.state.array;
 
@@ -259,7 +263,7 @@ export default class SortingVisualizer extends React.Component {
                 <div className="container-sm">
                 <div className="navbar-brand"><b>Array Sorter</b></div>
                     <ul className="navbar-nav">
-                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithm()}>BIGTEST</button>
+                    
                     <li className="nav-item">
                         <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
                     </li>
@@ -279,9 +283,9 @@ export default class SortingVisualizer extends React.Component {
                         <select className="form-select type-select" id="type" value={this.state.sortType} onChange={this.handleTypeChange}>
                             <option value="bubble">Bubble Sort</option>
                             <option value="quick">Quick Sort</option>
-                            <option value="merge">Merge Sort</option>
-                            <option value="heap">Heap Sort</option>
-                            <option value="insertion">Insertion Sort</option>
+                            <option value="merge" disabled>Merge Sort</option>
+                            <option value="heap" disabled>Heap Sort</option>
+                            <option value="insertion" disabled>Insertion Sort</option>
                         </select>
                     </div>
                     <div className="d-inline-block">
@@ -293,6 +297,7 @@ export default class SortingVisualizer extends React.Component {
                             <option value="75">75</option>
                             <option value="130">150</option>
                             <option value="200">200</option>
+                            <option value="1000">1,000</option>
                         </select>
                     </div>
                     <div className="d-inline-block">
