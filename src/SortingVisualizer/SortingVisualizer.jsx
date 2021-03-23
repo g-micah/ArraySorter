@@ -11,11 +11,13 @@ const DEFAULT_ARRAY_SIZE = 14;
 // This is the main color of the array bars.
 const UNSORTED_COLOR = 'lightblue';
 
+// This is the main color of the array bars after being sorted.
 const SORTED_COLOR = 'rgb(145, 170, 178)';
 
 // This is the color of array bars that are being compared throughout the animations.
 const SELECTED_COLOR = 'rgb(255, 235, 55)';
 
+// This is the color of array bars that have just been swapped
 const SWAP_COLOR = 'rgb(255, 27, 27)';
 
 
@@ -138,6 +140,7 @@ export default class SortingVisualizer extends React.Component {
     }
 
     sort(type){
+        var animations = [];
         this.sorting = true;
         //Clear tiemouts array
         this.timeouts = [];
@@ -145,37 +148,44 @@ export default class SortingVisualizer extends React.Component {
         this.clearBarsColor();
         //Disable buttoms
         this.sortingButtonsEnabled(false);
-        console.log(type+" sort!");
+        console.log("Initiating "+type+" sort!");
 
         switch(type)
         {
             case "bubble":
-                this.bubbleSort();
-                break;
-                /*
-            case "merge":
-                this.mergeSort();
+                animations = sortingAlgorithms.getBubbleSortAnimations(this.state.array);
                 break;
             case "quick":
-                this.quickSort();
+                animations = sortingAlgorithms.getQuickSortAnimations(this.state.array);
+                break;
+            case "merge":
+                animations = sortingAlgorithms.getMergeSortAnimations(this.state.array);
                 break;
             case "heap":
-                this.heapSort();
+                animations = sortingAlgorithms.getHeapSortAnimations(this.state.array);
                 break;
             case "insertion":
-                this.insertionSort();
+                animations = sortingAlgorithms.getInsertionSortAnimations(this.state.array);
                 break;
-                */
             default:
                 this.sorting = false;
                 this.sortingButtonsEnabled(true);
+                animations = [];
                 console.log("ERROR: Sort does not exist yet!");
                 break;
         }
+
+        this.displayAnimations(animations);
     }
 
-    bubbleSort(){
-        const animations = sortingAlgorithms.getBubbleSortAnimations(this.state.array);
+    /* 
+     * Animation 3D array use:
+     * [index1, index2, doSwap?, isSorted?]
+     * 
+     * if doSwap: 
+     *
+     */
+    displayAnimations(animations){
         const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
 
         for (let i = 0; i < animations.length; i++) {
@@ -211,49 +221,11 @@ export default class SortingVisualizer extends React.Component {
                 }
             }, i * speed));     
         }
-        //End of sorting animation
+        //Runs at the end of sorting animation
         this.timeouts.push(setTimeout(() => {
             this.sortingButtonsEnabled(true);
             this.sorting = false;
         }, animations.length * speed));
-    }
-    
-    mergeSort() {
-        /*
-        const animations = sortingAlgorithms.getMergeSortAnimations(this.state.array);
-        for (let i = 0; i < animations.length; i++) {
-            const arrayBars = document.getElementsByClassName('array-bar');
-            const isColorChange = i % 3 !== 2;
-            if (isColorChange) {
-                const [barOneIdx, barTwoIdx] = animations[i];
-                const barOneStyle = arrayBars[barOneIdx].style;
-                const barTwoStyle = arrayBars[barTwoIdx].style;
-                const color = i % 3 === 0 ? SELECTED_COLOR : UNSORTED_COLOR;
-                setTimeout(() => {
-                barOneStyle.backgroundColor = color;
-                barTwoStyle.backgroundColor = color;
-                }, i * ANIMATION_SPEED_MS);
-            } else {
-                setTimeout(() => {
-                const [barOneIdx, newHeight] = animations[i];
-                const barOneStyle = arrayBars[barOneIdx].style;
-                barOneStyle.height = `${newHeight}px`;
-                }, i * ANIMATION_SPEED_MS);
-            }
-        }
-        */
-    }
-
-    quickSort(){
-
-    }
-
-    heapSort(){
-
-    }
-
-    insertionSort(){
-
     }
 
     testSortingAlgorithm(){
@@ -266,7 +238,7 @@ export default class SortingVisualizer extends React.Component {
             }
             const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
             //const mergeSortedArray = sortingAlgorithms.getMergeSortAnimations(array.slice());
-            const quickSortedArray = sortingAlgorithms.quickSort(array.slice(), 0, array.length - 1);
+            const quickSortedArray = sortingAlgorithms.quickSort(array.slice());
             //const heapSortedArray = sortingAlgorithms.heapSort(array.slice());
             //const bubbleSortedArray = sortingAlgorithms.bubbleSort(array.slice());
             //const insertionSortedArray = sortingAlgorithms.insertionSort(array.slice());
@@ -287,12 +259,12 @@ export default class SortingVisualizer extends React.Component {
                 <div className="container-sm">
                 <div className="navbar-brand"><b>Array Sorter</b></div>
                     <ul className="navbar-nav">
-
+                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithm()}>BIGTEST</button>
                     <li className="nav-item">
-                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
+                        <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
                     </li>
                     <li className="nav-item">
-                    <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort(this.state.sortType)}>Sort!</button>
+                        <button type="button" className="btn btn-sm btn-light sort-button" onClick={() => this.sort(this.state.sortType)}>Sort!</button>
                     </li>
                     </ul>
                 </div>
@@ -306,8 +278,8 @@ export default class SortingVisualizer extends React.Component {
                         <label htmlFor="type">Type</label>
                         <select className="form-select type-select" id="type" value={this.state.sortType} onChange={this.handleTypeChange}>
                             <option value="bubble">Bubble Sort</option>
-                            <option value="merge">Merge Sort</option>
                             <option value="quick">Quick Sort</option>
+                            <option value="merge">Merge Sort</option>
                             <option value="heap">Heap Sort</option>
                             <option value="insertion">Insertion Sort</option>
                         </select>
