@@ -4,7 +4,7 @@ import './SortingVisualizer.css';
 import './bootstrap.css';
 
 // This is the default sort type selected
-const DEFAULT_SORT_TYPE = 'quick';
+const DEFAULT_SORT_TYPE = 'merge';
 
 // Change this value for the number of bars (value) in the array.
 const DEFAULT_ARRAY_SIZE = 14;
@@ -90,7 +90,7 @@ export default class SortingVisualizer extends React.Component {
         //Create new arrays and update visual
         const array = [];
         for (let i = 0; i < parseInt(size); i++) {
-            array.push(randomIntFromInterval(20, 825));
+            array.push(randomIntFromInterval(275, 1000));
         }
         this.width = (94 /  parseInt(size));
         if(size <= 10){
@@ -239,13 +239,13 @@ export default class SortingVisualizer extends React.Component {
                 array.push(randomIntFromInterval(-1000, 1000));
             }
             const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
-            //const mergeSortedArray = sortingAlgorithms.getMergeSortAnimations(array.slice());
+            const mergeSortedArray = sortingAlgorithms.mergeSort(array.slice());
             const quickSortedArray = sortingAlgorithms.quickSort(array.slice());
             //const heapSortedArray = sortingAlgorithms.heapSort(array.slice());
             //const bubbleSortedArray = sortingAlgorithms.bubbleSort(array.slice());
             //const insertionSortedArray = sortingAlgorithms.insertionSort(array.slice());
-            //console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
-            console.log(arraysAreEqual(javaScriptSortedArray, quickSortedArray));
+            console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
+            //console.log(arraysAreEqual(javaScriptSortedArray, quickSortedArray));
             //console.log(arraysAreEqual(javaScriptSortedArray, heapSortedArray));
             //console.log(arraysAreEqual(javaScriptSortedArray, bubbleSortedArray));
             //console.log(arraysAreEqual(javaScriptSortedArray, insertionSortedArray));
@@ -283,7 +283,7 @@ export default class SortingVisualizer extends React.Component {
                         <select className="form-select type-select" id="type" value={this.state.sortType} onChange={this.handleTypeChange}>
                             <option value="bubble">Bubble Sort</option>
                             <option value="quick">Quick Sort</option>
-                            <option value="merge" disabled>Merge Sort</option>
+                            <option value="merge">Merge Sort</option>
                             <option value="heap" disabled>Heap Sort</option>
                             <option value="insertion" disabled>Insertion Sort</option>
                         </select>
@@ -327,7 +327,7 @@ export default class SortingVisualizer extends React.Component {
                                 style=
                                 {{
                                     backgroundColor: UNSORTED_COLOR,
-                                    height: `${value/10}vh`,
+                                    height: `max(calc(${value/10}vh - 115px), 1px)`,
                                     width: `max(calc(${this.width}% - ${this.barMargin*2}px), 1px)`,
                                     margin: `0px ${this.barMargin}px`
                                 }}

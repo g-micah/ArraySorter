@@ -190,9 +190,45 @@ export const quickSort = (arr) => {
 //=========================== MERGE SORT ===========================
 export function getMergeSortAnimations(arr) {
   const animations = [];
+  let len = arr.length;
+  if (len === 1){
+    animations.push([0, 0, false, false]);
+    return animations;
+  } 
+
+  if (arr.length <= 1) return arr;
+  let mid = Math.floor(arr.length / 2),
+      left = mergeSort(arr.slice(0, mid)),
+      right = mergeSort(arr.slice(mid));
+
+  
+  merge(left, right, animations);
 
 
+  animations.push([0, 0, false, false]);
   return animations;
+}
+
+const merge = (arr1, arr2, animations) => {
+  let sorted = [];
+
+  while (arr1.length && arr2.length) {
+    if (arr1[0] < arr2[0]) sorted.push(arr1.shift());
+    else sorted.push(arr2.shift());
+  };
+
+  return sorted.concat(arr1.slice().concat(arr2.slice()));
+};
+
+
+
+export function mergeSort(arr) {
+  if (arr.length <= 1) return arr;
+  let mid = Math.floor(arr.length / 2),
+      left = mergeSort(arr.slice(0, mid)),
+      right = mergeSort(arr.slice(mid));
+
+  return merge(left, right, []);
 }
 
 
@@ -200,7 +236,11 @@ export function getMergeSortAnimations(arr) {
 //=========================== HEAP SORT ===========================
 export function getHeapSortAnimations(arr) {
   const animations = [];
-
+  let len = arr.length;
+  if (len === 1){
+    animations.push([0, 0, false, false]);
+    return animations;
+  } 
 
   return animations;
 }
@@ -210,7 +250,11 @@ export function getHeapSortAnimations(arr) {
 //=========================== INSERTION SORT ===========================
 export function getInsertionSortAnimations(arr) {
   const animations = [];
-
+  let len = arr.length;
+  if (len === 1){
+    animations.push([0, 0, false, false]);
+    return animations;
+  } 
 
   return animations;
 }
