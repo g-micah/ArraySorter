@@ -213,14 +213,7 @@ function mergeSort (arr, startingIdx, animations) {
 const merge = (arr1, arr2, mid, startingIdx, animations) => {
   let sorted = [];
   let n = 0;
-  let n1 = 0;
   let n2 = 0;
-
-  let l = arr1.length + arr2.length;
-  let l1 = arr1.length;
-  let l2 = arr2.length;
-  
-  let temp = 0;
 
   while (arr1.length > 0 && arr2.length > 0) {
     animations.push([startingIdx+n, startingIdx+mid+n2, 0]);
@@ -229,7 +222,6 @@ const merge = (arr1, arr2, mid, startingIdx, animations) => {
       animations.push([startingIdx+n, arr1[0], 3]);
 
       sorted.push(arr1.shift());
-      n1++;
     }
     else {
       animations.push([startingIdx+n, arr2[0], 3]);

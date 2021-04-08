@@ -4,10 +4,13 @@ import './SortingVisualizer.css';
 import './bootstrap.css';
 
 // This is the default sort type selected
-const DEFAULT_SORT_TYPE = 'merge';
+const DEFAULT_SORT_TYPE = 'quick';
 
 // Change this value for the number of bars (value) in the array.
-const DEFAULT_ARRAY_SIZE = 14;
+const DEFAULT_ARRAY_SIZE = 32;
+
+// This is the default sort type selected
+const DEFAULT_SORT_SPEED = 2;
 
 // This is the main color of the array bars.
 const UNSORTED_COLOR = 'lightblue';
@@ -33,7 +36,7 @@ export default class SortingVisualizer extends React.Component {
         this.state = { 
             array: [],
             arrSize: DEFAULT_ARRAY_SIZE,
-            speedMultiplier: 1,
+            speedMultiplier: DEFAULT_SORT_SPEED,
             sortType: DEFAULT_SORT_TYPE
         }
         this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -204,7 +207,7 @@ export default class SortingVisualizer extends React.Component {
                         for (let x = 0; x < arrayBars.length; x++) {
                             if (arrayBars[x].style.backgroundColor !== SORTED_COLOR)
                             {
-                                if (action == 2 && (x >= var1) && (x <= var2)) {
+                                if (action === 2 && (x >= var1) && (x <= var2)) {
                                     arrayBars[x].style.backgroundColor = SORTED_COLOR;
                                 } else if (x === var1 || x === var2){
                                     arrayBars[x].style.backgroundColor = SELECTED_COLOR;
@@ -224,6 +227,9 @@ export default class SortingVisualizer extends React.Component {
                     case 3:
                         arrayBars[var1].style.backgroundColor = SWAP_COLOR;
                         arrayBars[var1].style.height = "max(calc("+var2/10+"vh - 115px), 1px)"
+                        break;
+                    default:
+                        console.log("ERROR: Sort step action not specified!");
                         break;
                 }
                 if (i === animations.length-1) {
@@ -250,7 +256,7 @@ export default class SortingVisualizer extends React.Component {
             }
             const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
             const mergeSortedArray = sortingAlgorithms.mergeSortArray(array.slice());
-            const quickSortedArray = sortingAlgorithms.quickSortArray(array.slice());
+            //const quickSortedArray = sortingAlgorithms.quickSortArray(array.slice());
             //const heapSortedArray = sortingAlgorithms.heapSortArray(array.slice());
             //const bubbleSortedArray = sortingAlgorithms.bubbleSortArray(array.slice());
             //const insertionSortedArray = sortingAlgorithms.insertionSortArray(array.slice());
