@@ -181,45 +181,55 @@ export default class SortingVisualizer extends React.Component {
 
     /* 
      * Animation 3D array use:
-     * [index1, index2, doSwap?, isSorted?]
+     * [var1, var2, action]
      * 
-     * if doSwap:   Swap values at 2 indexes
-     * if isSorted: Set index1 through index2 color to sorted
-     * else:        Highlight both indexes
+     * action:
+     *  - 0, highlight: Highlight both indexes
+     *  - 1, doSwap:    Swap values at 2 var indexes
+     *  - 2, isSorted:  Set index var1 through index var2 color to sorted
+     *  - 3, insert:    Set value at index var1 equal to var2
      */
     displayAnimations(animations){
         const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
 
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('array-bar');
-            const [barOneIdx, barTwoIdx, swapBars, sorted] = animations[i];
+            const [var1, var2, action] = animations[i];
 
             this.timeouts.push(setTimeout(() => {
-                if (!swapBars){
-                    if (i !== animations.length-1) {
+                switch (action)
+                {
+                    case 0:
+                    case 2:
                         for (let x = 0; x < arrayBars.length; x++) {
                             if (arrayBars[x].style.backgroundColor !== SORTED_COLOR)
                             {
-                                if (sorted && (x >= barOneIdx) && (x <= barTwoIdx)) {
+                                if (action == 2 && (x >= var1) && (x <= var2)) {
                                     arrayBars[x].style.backgroundColor = SORTED_COLOR;
-                                } else if (x === barOneIdx || x === barTwoIdx){
+                                } else if (x === var1 || x === var2){
                                     arrayBars[x].style.backgroundColor = SELECTED_COLOR;
                                 } else {
                                     arrayBars[x].style.backgroundColor = UNSORTED_COLOR;
                                 }
                             }
                         }
-                    } else {
-                        for (let x = 0; x < arrayBars.length; x++) {
-                            arrayBars[x].style.backgroundColor = SORTED_COLOR;
-                        }
+                        break;
+                    case 1:
+                        const tempHeight = arrayBars[var1].style.height;
+                        arrayBars[var1].style.backgroundColor = SWAP_COLOR;
+                        arrayBars[var2].style.backgroundColor = SWAP_COLOR;
+                        arrayBars[var1].style.height = arrayBars[var2].style.height;
+                        arrayBars[var2].style.height = tempHeight;
+                        break;
+                    case 3:
+                        arrayBars[var1].style.backgroundColor = SWAP_COLOR;
+                        arrayBars[var1].style.height = "max(calc("+var2/10+"vh - 115px), 1px)"
+                        break;
+                }
+                if (i === animations.length-1) {
+                    for (let x = 0; x < arrayBars.length; x++) {
+                        arrayBars[x].style.backgroundColor = SORTED_COLOR;
                     }
-                } else {
-                    const tempHeight = arrayBars[barOneIdx].style.height;
-                    arrayBars[barOneIdx].style.backgroundColor = SWAP_COLOR;
-                    arrayBars[barTwoIdx].style.backgroundColor = SWAP_COLOR;
-                    arrayBars[barOneIdx].style.height = arrayBars[barTwoIdx].style.height;
-                    arrayBars[barTwoIdx].style.height = tempHeight;
                 }
             }, i * speed));     
         }
@@ -239,11 +249,11 @@ export default class SortingVisualizer extends React.Component {
                 array.push(randomIntFromInterval(-1000, 1000));
             }
             const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
-            const mergeSortedArray = sortingAlgorithms.mergeSort(array.slice());
-            const quickSortedArray = sortingAlgorithms.quickSort(array.slice());
-            //const heapSortedArray = sortingAlgorithms.heapSort(array.slice());
-            //const bubbleSortedArray = sortingAlgorithms.bubbleSort(array.slice());
-            //const insertionSortedArray = sortingAlgorithms.insertionSort(array.slice());
+            const mergeSortedArray = sortingAlgorithms.mergeSortArray(array.slice());
+            const quickSortedArray = sortingAlgorithms.quickSortArray(array.slice());
+            //const heapSortedArray = sortingAlgorithms.heapSortArray(array.slice());
+            //const bubbleSortedArray = sortingAlgorithms.bubbleSortArray(array.slice());
+            //const insertionSortedArray = sortingAlgorithms.insertionSortArray(array.slice());
             console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
             //console.log(arraysAreEqual(javaScriptSortedArray, quickSortedArray));
             //console.log(arraysAreEqual(javaScriptSortedArray, heapSortedArray));
@@ -297,7 +307,7 @@ export default class SortingVisualizer extends React.Component {
                             <option value="75">75</option>
                             <option value="130">150</option>
                             <option value="200">200</option>
-                            <option value="1000">1,000</option>
+                            <option value="400">400</option>
                         </select>
                     </div>
                     <div className="d-inline-block">
