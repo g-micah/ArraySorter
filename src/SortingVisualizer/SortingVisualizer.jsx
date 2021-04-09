@@ -4,13 +4,13 @@ import './SortingVisualizer.css';
 import './bootstrap.css';
 
 // This is the default sort type selected
-const DEFAULT_SORT_TYPE = 'quick';
+const DEFAULT_SORT_TYPE = 'merge';
 
 // Change this value for the number of bars (value) in the array.
-const DEFAULT_ARRAY_SIZE = 32;
+const DEFAULT_ARRAY_SIZE = 75;
 
 // This is the default sort type selected
-const DEFAULT_SORT_SPEED = 2;
+const DEFAULT_SORT_SPEED = 1;
 
 // This is the main color of the array bars.
 const UNSORTED_COLOR = 'lightblue';
@@ -188,13 +188,23 @@ export default class SortingVisualizer extends React.Component {
      * 
      * action:
      *  - 0, highlight: Highlight both indexes
-     *  - 1, doSwap:    Swap values at 2 var indexes
+     *  - 1, swap:    Swap values at 2 var indexes
      *  - 2, isSorted:  Set index var1 through index var2 color to sorted
      *  - 3, insert:    Set value at index var1 equal to var2
      *  - 4, swapShift: Swap values at 2 var indexes then insert right value directly next to left value and shift
      */
     displayAnimations(animations){
         const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
+
+        let actionCount = animations.length;
+        for (let i = 1; i < animations.length; i++) {
+            if (animations[i][2] === 2 && animations[i-1][2]) {
+                actionCount--;
+            }
+        }
+        //console.log("actions: "+actionCount+"\nlength: "+animations.length);
+
+        let extraTiming = 0;
 
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('array-bar');
@@ -203,14 +213,12 @@ export default class SortingVisualizer extends React.Component {
             this.timeouts.push(setTimeout(() => {
                 switch (action)
                 {
+                    //highlight
                     case 0:
-                    case 2:
                         for (let x = 0; x < arrayBars.length; x++) {
                             if (arrayBars[x].style.backgroundColor !== SORTED_COLOR)
                             {
-                                if (action === 2 && (x >= var1) && (x <= var2)) {
-                                    arrayBars[x].style.backgroundColor = SORTED_COLOR;
-                                } else if (x === var1 || x === var2){
+                                if (x === var1 || x === var2){
                                     arrayBars[x].style.backgroundColor = SELECTED_COLOR;
                                 } else {
                                     arrayBars[x].style.backgroundColor = UNSORTED_COLOR;
@@ -219,6 +227,7 @@ export default class SortingVisualizer extends React.Component {
                         }
                         break;
 
+                    //swap
                     case 1:
                         const tempHeight = arrayBars[var1].style.height;
                         arrayBars[var1].style.backgroundColor = SWAP_COLOR;
@@ -227,19 +236,44 @@ export default class SortingVisualizer extends React.Component {
                         arrayBars[var2].style.height = tempHeight;
                         break;
 
+                    //isSorted
+                    case 2: 
+                        //Check if next action is sort highlight
+                        let sortedVar1, sortedVar2;
+                        let loop = true;
+                        i--;
+                        
+                        while (loop) {
+                            loop = false;
+                            i++;
+                            extraTiming++;
+                            [sortedVar1, sortedVar2] = animations[i];
+                            for (let x = 0; x < arrayBars.length; x++) {
+                                if (x >= sortedVar1 && x <= sortedVar2) {
+                                    arrayBars[x].style.backgroundColor = SORTED_COLOR;
+                                }
+                            }
+                            if (i+1 < animations.length-1) {
+                                if (animations[i+1][2] === 2)
+                                {
+                                    loop = true;
+                                }
+                            }
+                        } 
+                        break;
+
+                    //insert
                     case 3:
                         arrayBars[var1].style.backgroundColor = SWAP_COLOR;
                         arrayBars[var1].style.height = "max(calc("+var2/10+"vh - 115px), 1px)"
                         break;
 
+                    //swapShift
                     case 4:
                         //swap
                         const tempHeight2 = arrayBars[var1].style.height;
                         arrayBars[var1].style.height = arrayBars[var2].style.height;
-
                         let temp = var2;
-
-                        
                         while (temp > var1) {
                             //move and shift to right
                             arrayBars[temp].style.height = arrayBars[temp-1].style.height;
@@ -248,33 +282,36 @@ export default class SortingVisualizer extends React.Component {
                         arrayBars[var1+1].style.height = tempHeight2;
 
                         for (let x = 0; x < arrayBars.length; x++) {
-                            if (x === var1 || x === var1+1)
+                            if (arrayBars[x].style.backgroundColor !== SORTED_COLOR)
                             {
-                                arrayBars[x].style.backgroundColor = SWAP_COLOR;
-                            }
-                            else
-                            {
-                                arrayBars[x].style.backgroundColor = UNSORTED_COLOR;
+                                if (x === var1 || x === var1+1)
+                                {
+                                    arrayBars[x].style.backgroundColor = SWAP_COLOR;
+                                }
+                                else
+                                {
+                                    arrayBars[x].style.backgroundColor = UNSORTED_COLOR;
+                                }
                             }
                         }
                         break;
-                        
+
                     default:
                         console.log("ERROR: Sort step action not specified!");
                         break;
                 }
-                if (i === animations.length-1) {
+                if (i >= animations.length-1) {
                     for (let x = 0; x < arrayBars.length; x++) {
                         arrayBars[x].style.backgroundColor = SORTED_COLOR;
                     }
                 }
-            }, i * speed));     
+            }, (i-extraTiming) * speed));     
         }
         //Runs at the end of sorting animation
         this.timeouts.push(setTimeout(() => {
             this.sortingButtonsEnabled(true);
             this.sorting = false;
-        }, animations.length * speed));
+        }, actionCount * speed));
     }
 
     testSortingAlgorithm(){
@@ -286,7 +323,7 @@ export default class SortingVisualizer extends React.Component {
                 array.push(randomIntFromInterval(-1000, 1000));
             }
             const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
-            const mergeSortedArray = sortingAlgorithms.mergeSortArray(array.slice());
+            const mergeSortedArray = sortingAlgorithms.mergeSort(array.slice(), true, []);
             //const quickSortedArray = sortingAlgorithms.quickSortArray(array.slice());
             //const heapSortedArray = sortingAlgorithms.heapSortArray(array.slice());
             //const bubbleSortedArray = sortingAlgorithms.bubbleSortArray(array.slice());
@@ -342,7 +379,7 @@ export default class SortingVisualizer extends React.Component {
                             <option value="14">14</option>
                             <option value="32">32</option>
                             <option value="75">75</option>
-                            <option value="130">150</option>
+                            <option value="130">130</option>
                             <option value="200">200</option>
                             <option value="400">400</option>
                         </select>

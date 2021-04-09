@@ -1,3 +1,15 @@
+/* 
+  * Animation 3D array use:
+  * [var1, var2, action]
+  * 
+  * action:
+  *  - 0, highlight: Highlight both indexes
+  *  - 1, doSwap:    Swap values at 2 var indexes
+  *  - 2, isSorted:  Set index var1 through index var2 color to sorted
+  *  - 3, insert:    Set value at index var1 equal to var2
+  *  - 4, swapShift: Swap values at 2 var indexes then insert right value directly next to left value and shift
+  */
+
 function swap(arr, leftIndex, rightIndex){
   var temp = arr[leftIndex];
   arr[leftIndex] = arr[rightIndex];
@@ -195,22 +207,22 @@ export function getMergeSortAnimations(arr) {
     return animations;
   } 
 
-  mergeSort(arr, 0, animations);
+  mergeSort(arr, 0, true, animations);
   
   return animations;
 }
 
-function mergeSort (arr, startingIdx, animations) {
+export function mergeSort (arr, startingIdx, firstIteration, animations) {
   if (arr.length <= 1) return arr;
 
   let mid = Math.floor(arr.length / 2);
-  let left = mergeSort(arr.slice(0, mid), startingIdx, animations);
-  let right = mergeSort(arr.slice(mid), (startingIdx+mid), animations);
+  let left = mergeSort(arr.slice(0, mid), startingIdx, false, animations);
+  let right = mergeSort(arr.slice(mid), (startingIdx+mid), false, animations);
 
-  return merge(left, right, mid, startingIdx, animations);
+  return merge(left, right, mid, startingIdx, firstIteration, animations);
 }
 
-const merge = (arr1, arr2, mid, startingIdx, animations) => {
+const merge = (arr1, arr2, mid, startingIdx, firstIteration, animations) => {
   let sorted = [];
   let n = 0;
   let n2 = 0;
@@ -230,36 +242,13 @@ const merge = (arr1, arr2, mid, startingIdx, animations) => {
       sorted.push(arr2.shift());
       n2++;
     }
-
+    if (firstIteration){
+      animations.push([n, n, 2]);
+    }
     n++;
   }
-
-  arr1.forEach(element => { 
-    animations.push([startingIdx+n, startingIdx+n, 0]);
-    animations.push([startingIdx+n, element, 3]);
-    n++;
-  });
-  arr2.forEach(element => { 
-    animations.push([startingIdx+n, startingIdx+n, 0]);
-    animations.push([startingIdx+n, element, 3]);
-    n++;
-  });
-  
-
   return sorted.concat(arr1.slice().concat(arr2.slice()));
 };
-
-
-
-export function mergeSortArray(arr) {
-  if (arr.length <= 1) return arr;
-  let mid = Math.floor(arr.length / 2),
-      left = mergeSortArray(arr.slice(0, mid)),
-      right = mergeSortArray(arr.slice(mid));
-
-  return merge(left, right, 0, 0, []);
-}
-
 
 
 //=========================== HEAP SORT ===========================
