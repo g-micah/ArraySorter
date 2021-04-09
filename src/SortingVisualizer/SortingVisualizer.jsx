@@ -191,6 +191,7 @@ export default class SortingVisualizer extends React.Component {
      *  - 1, doSwap:    Swap values at 2 var indexes
      *  - 2, isSorted:  Set index var1 through index var2 color to sorted
      *  - 3, insert:    Set value at index var1 equal to var2
+     *  - 4, 
      */
     displayAnimations(animations){
         const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
