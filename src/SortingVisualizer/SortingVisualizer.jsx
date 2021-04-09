@@ -154,8 +154,6 @@ export default class SortingVisualizer extends React.Component {
         this.sortingButtonsEnabled(false);
         console.log("Initiating "+type+" sort!");
 
-        console.log(this.state.array);
-
         switch(type)
         {
             case "bubble":
@@ -182,8 +180,6 @@ export default class SortingVisualizer extends React.Component {
                 break;
         }
 
-        console.log(this.state.array);
-
         this.displayAnimations(animations);
     }
 
@@ -200,11 +196,14 @@ export default class SortingVisualizer extends React.Component {
      */
     displayAnimations(animations){
         const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
-        var extraTiming = 0;
+
         let actionCount = animations.length;
+        let skipTiming = [];
         for (let i = 1; i < animations.length; i++) {
             if (animations[i][2] === 2 && animations[i-1][2]) {
                 actionCount--;
+
+                skipTiming.push(i);
             }
         }
         //console.log("actions: "+actionCount+"\nlength: "+animations.length);
@@ -212,6 +211,11 @@ export default class SortingVisualizer extends React.Component {
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('array-bar');
             const [var1, var2, action] = animations[i];
+
+            let actionNum = i;
+            for (let j = 0; j < skipTiming.length; j++) {
+                actionNum++;
+            }
 
             this.timeouts.push(setTimeout(() => {
                 switch (action)
@@ -249,7 +253,6 @@ export default class SortingVisualizer extends React.Component {
                         while (loop) {
                             loop = false;
                             i++;
-                            extraTiming++;
                             [sortedVar1, sortedVar2] = animations[i];
                             for (let x = 0; x < arrayBars.length; x++) {
                                 if (x >= sortedVar1 && x <= sortedVar2) {
@@ -308,13 +311,20 @@ export default class SortingVisualizer extends React.Component {
                         arrayBars[x].style.backgroundColor = SORTED_COLOR;
                     }
                 }
-            }, (i-extraTiming) * speed));     
+
+
+            }, i * speed)); 
+
         }
         //Runs at the end of sorting animation
         this.timeouts.push(setTimeout(() => {
             this.sortingButtonsEnabled(true);
             this.sorting = false;
         }, actionCount * speed));
+
+        this.timeouts.push(setTimeout(() => {
+           this.forceUpdate();
+        }, (actionCount+1) * speed));
     }
 
     testSortingAlgorithms(){
@@ -358,6 +368,7 @@ export default class SortingVisualizer extends React.Component {
                 <div className="container-sm">
                 <div className="navbar-brand"><b>Array Sorter</b></div>
                     <ul className="navbar-nav">
+                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.forceUpdate()}>F</button>
                     <li className="nav-item">
                         <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
                     </li>

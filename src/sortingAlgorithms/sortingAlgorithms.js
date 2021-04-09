@@ -207,7 +207,7 @@ export function getMergeSortAnimations(arr) {
     return animations;
   } 
 
-  arr = mergeSort(arr, 0, true, animations);
+  mergeSort(arr, 0, true, animations);
   
   return animations;
 }
