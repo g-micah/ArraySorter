@@ -191,7 +191,7 @@ export default class SortingVisualizer extends React.Component {
      *  - 1, doSwap:    Swap values at 2 var indexes
      *  - 2, isSorted:  Set index var1 through index var2 color to sorted
      *  - 3, insert:    Set value at index var1 equal to var2
-     *  - 4, 
+     *  - 4, swapShift: Swap values at 2 var indexes then insert right value directly next to left value and shift
      */
     displayAnimations(animations){
         const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
@@ -218,6 +218,7 @@ export default class SortingVisualizer extends React.Component {
                             }
                         }
                         break;
+
                     case 1:
                         const tempHeight = arrayBars[var1].style.height;
                         arrayBars[var1].style.backgroundColor = SWAP_COLOR;
@@ -225,10 +226,39 @@ export default class SortingVisualizer extends React.Component {
                         arrayBars[var1].style.height = arrayBars[var2].style.height;
                         arrayBars[var2].style.height = tempHeight;
                         break;
+
                     case 3:
                         arrayBars[var1].style.backgroundColor = SWAP_COLOR;
                         arrayBars[var1].style.height = "max(calc("+var2/10+"vh - 115px), 1px)"
                         break;
+
+                    case 4:
+                        //swap
+                        const tempHeight2 = arrayBars[var1].style.height;
+                        arrayBars[var1].style.height = arrayBars[var2].style.height;
+
+                        let temp = var2;
+
+                        
+                        while (temp > var1) {
+                            //move and shift to right
+                            arrayBars[temp].style.height = arrayBars[temp-1].style.height;
+                            temp--;
+                        }
+                        arrayBars[var1+1].style.height = tempHeight2;
+
+                        for (let x = 0; x < arrayBars.length; x++) {
+                            if (x === var1 || x === var1+1)
+                            {
+                                arrayBars[x].style.backgroundColor = SWAP_COLOR;
+                            }
+                            else
+                            {
+                                arrayBars[x].style.backgroundColor = UNSORTED_COLOR;
+                            }
+                        }
+                        break;
+                        
                     default:
                         console.log("ERROR: Sort step action not specified!");
                         break;

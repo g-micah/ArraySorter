@@ -219,19 +219,20 @@ const merge = (arr1, arr2, mid, startingIdx, animations) => {
     animations.push([startingIdx+n, startingIdx+mid+n2, 0]);
 
     if (arr1[0] < arr2[0]) {
-      animations.push([startingIdx+n, arr1[0], 3]);
 
       sorted.push(arr1.shift());
+
     }
     else {
-      animations.push([startingIdx+n, arr2[0], 3]);
+      animations.push([startingIdx+n, startingIdx+mid+n2, 4]);
+      animations.push([startingIdx+n, startingIdx+mid+n2, 0]);
 
       sorted.push(arr2.shift());
-      n2++
+      n2++;
     }
-    animations.push([startingIdx+n, startingIdx+n, 0]);
+
     n++;
-  };
+  }
 
   arr1.forEach(element => { 
     animations.push([startingIdx+n, startingIdx+n, 0]);
