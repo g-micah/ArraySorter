@@ -154,6 +154,8 @@ export default class SortingVisualizer extends React.Component {
         this.sortingButtonsEnabled(false);
         console.log("Initiating "+type+" sort!");
 
+        console.log(this.state.array);
+
         switch(type)
         {
             case "bubble":
@@ -179,6 +181,8 @@ export default class SortingVisualizer extends React.Component {
                 console.log("ERROR: Sort does not exist yet!");
                 break;
         }
+
+        console.log(this.state.array);
 
         this.displayAnimations(animations);
     }
@@ -354,7 +358,6 @@ export default class SortingVisualizer extends React.Component {
                 <div className="container-sm">
                 <div className="navbar-brand"><b>Array Sorter</b></div>
                     <ul className="navbar-nav">
-                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithms()}>ALGORITHM-TEST</button>
                     <li className="nav-item">
                         <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
                     </li>
@@ -372,11 +375,11 @@ export default class SortingVisualizer extends React.Component {
                     <div className="d-inline-block">
                         <label htmlFor="type">Type</label>
                         <select className="form-select type-select" id="type" value={this.state.sortType} onChange={this.handleTypeChange}>
-                            <option value="bubble">Bubble Sort</option>
-                            <option value="quick">Quick Sort</option>
                             <option value="merge">Merge Sort</option>
-                            <option value="heap">Heap Sort</option>
+                            <option value="bubble">Bubble Sort</option>
                             <option value="insertion">Insertion Sort</option>
+                            <option value="quick">Quick Sort</option>
+                            <option value="heap">Heap Sort</option>
                         </select>
                     </div>
                     <div className="d-inline-block">

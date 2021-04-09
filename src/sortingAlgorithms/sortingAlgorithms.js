@@ -208,7 +208,6 @@ export function getMergeSortAnimations(arr) {
   } 
 
   arr = mergeSort(arr, 0, true, animations);
-  console.log(arr);
   
   return animations;
 }
@@ -268,22 +267,25 @@ export function getHeapSortAnimations(arr) {
 export function heapSort(arr, animations) {
   let len = arr.length;
 
-  for (var i = Math.floor(len / 2); i >= 0; i -= 1)      {
-      heap_root(arr, i, len);
-    }
+  for (var i = Math.floor(len / 2); i >= 0; i -= 1) {
+    heap_root(arr, i, len, animations);
+  }
 
   for (i = arr.length - 1; i > 0; i--) {
-      swap(arr, 0, i);
-      len--;
+    animations.push([0, i, 0]);
+    animations.push([0, i, 1]);
+    animations.push([i, i, 2]);
     
-    
-      heap_root(arr, 0, len);
+    swap(arr, 0, i);
+    len--;
+  
+    heap_root(arr, 0, len, animations);
   }
 
   return arr;
 }
 
-function heap_root(arr, i, len) {
+function heap_root(arr, i, len, animations) {
   var left = 2 * i + 1;
   var right = 2 * i + 2;
   var max = i;
@@ -292,13 +294,16 @@ function heap_root(arr, i, len) {
       max = left;
   }
 
-  if (right < len && arr[right] > arr[max])     {
+  if (right < len && arr[right] > arr[max]){
       max = right;
   }
 
   if (max !== i) {
-      swap(arr, i, max);
-      heap_root(arr, max, len);
+    animations.push([i, max, 0]);
+    animations.push([i, max, 1]);
+    animations.push([i, max, 0]);
+    swap(arr, i, max);
+    heap_root(arr, max, len, animations);
   }
 }
 
