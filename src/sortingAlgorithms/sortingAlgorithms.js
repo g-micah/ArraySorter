@@ -207,7 +207,8 @@ export function getMergeSortAnimations(arr) {
     return animations;
   } 
 
-  mergeSort(arr, 0, true, animations);
+  arr = mergeSort(arr, 0, true, animations);
+  console.log(arr);
   
   return animations;
 }
@@ -219,7 +220,7 @@ export function mergeSort (arr, startingIdx, firstIteration, animations) {
   let mid = Math.floor((len) / 2);
   let left = mergeSort(arr.slice(0, mid), startingIdx, false, animations);
   let right = mergeSort(arr.slice(mid), (startingIdx+mid), false, animations);
-
+ 
   return merge(left, right, mid, startingIdx, firstIteration, animations);
 }
 
@@ -232,9 +233,7 @@ const merge = (arr1, arr2, mid, startingIdx, firstIteration, animations) => {
     animations.push([startingIdx+n, startingIdx+mid+n2, 0]);
 
     if (arr1[0] < arr2[0]) {
-
       sorted.push(arr1.shift());
-
     }
     else {
       animations.push([startingIdx+n, startingIdx+mid+n2, 4]);

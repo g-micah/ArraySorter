@@ -164,6 +164,7 @@ export default class SortingVisualizer extends React.Component {
                 break;
             case "merge":
                 animations = sortingAlgorithms.getMergeSortAnimations(this.state.array);
+                this.state.array = sortingAlgorithms.mergeSort(this.state.array, 0, true, []);
                 break;
             case "heap":
                 animations = sortingAlgorithms.getHeapSortAnimations(this.state.array);
