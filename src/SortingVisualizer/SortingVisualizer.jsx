@@ -195,7 +195,7 @@ export default class SortingVisualizer extends React.Component {
      */
     displayAnimations(animations){
         const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
-
+        var extraTiming = 0;
         let actionCount = animations.length;
         for (let i = 1; i < animations.length; i++) {
             if (animations[i][2] === 2 && animations[i-1][2]) {
@@ -203,8 +203,6 @@ export default class SortingVisualizer extends React.Component {
             }
         }
         //console.log("actions: "+actionCount+"\nlength: "+animations.length);
-
-        let extraTiming = 0;
 
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('array-bar');
@@ -314,8 +312,9 @@ export default class SortingVisualizer extends React.Component {
         }, actionCount * speed));
     }
 
-    testSortingAlgorithm(){
+    testSortingAlgorithms(){
         //Creates 100 arrays and checks each array for sorting against JavaScript sort
+        let sortFailed = false;
         for (let i = 0; i < 100; i++) {
             const array = [];
             const length = randomIntFromInterval(1, 1000);
@@ -323,21 +322,28 @@ export default class SortingVisualizer extends React.Component {
                 array.push(randomIntFromInterval(-1000, 1000));
             }
             const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
-            const mergeSortedArray = sortingAlgorithms.mergeSort(array.slice(), true, []);
-            //const quickSortedArray = sortingAlgorithms.quickSortArray(array.slice());
-            //const heapSortedArray = sortingAlgorithms.heapSortArray(array.slice());
-            //const bubbleSortedArray = sortingAlgorithms.bubbleSortArray(array.slice());
-            //const insertionSortedArray = sortingAlgorithms.insertionSortArray(array.slice());
-            console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
-            //console.log(arraysAreEqual(javaScriptSortedArray, quickSortedArray));
-            //console.log(arraysAreEqual(javaScriptSortedArray, heapSortedArray));
-            //console.log(arraysAreEqual(javaScriptSortedArray, bubbleSortedArray));
-            //console.log(arraysAreEqual(javaScriptSortedArray, insertionSortedArray));
+            const bubbleSortedArray = sortingAlgorithms.bubbleSortArray(array.slice());
+            const quickSortedArray = sortingAlgorithms.quickSort(array.slice());
+            const mergeSortedArray = sortingAlgorithms.mergeSort(array.slice(), 0, true, []);
+            const heapSortedArray = sortingAlgorithms.heapSort(array.slice(), []);
+            const insertionSortedArray = sortingAlgorithms.insertionSort(array.slice(), []);
+            if (!arraysAreEqual(javaScriptSortedArray, bubbleSortedArray)) sortFailed = true;
+            if (!arraysAreEqual(javaScriptSortedArray, mergeSortedArray)) sortFailed = true;
+            if (!arraysAreEqual(javaScriptSortedArray, quickSortedArray)) sortFailed = true;
+            if (!arraysAreEqual(javaScriptSortedArray, heapSortedArray)) sortFailed = true;
+            if (!arraysAreEqual(javaScriptSortedArray, insertionSortedArray)) sortFailed = true;
         }
+        if (sortFailed)
+        {
+            console.log("A FAILURE WAS DETECTED.");
+        } else {
+            console.log("EACH SORT PREFORMED 100 [1,000 LENGTH ARRAY] TESTS SUCCESSFULLY.");
+        }
+        
     }
 
 
-//<button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithm()}>ALGORITHM-TEST</button>
+//<button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithms()}>ALGORITHM-TEST</button>
     render() {
         const array = this.state.array;
 
@@ -347,7 +353,7 @@ export default class SortingVisualizer extends React.Component {
                 <div className="container-sm">
                 <div className="navbar-brand"><b>Array Sorter</b></div>
                     <ul className="navbar-nav">
-                    
+                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithms()}>ALGORITHM-TEST</button>
                     <li className="nav-item">
                         <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
                     </li>
@@ -368,8 +374,8 @@ export default class SortingVisualizer extends React.Component {
                             <option value="bubble">Bubble Sort</option>
                             <option value="quick">Quick Sort</option>
                             <option value="merge">Merge Sort</option>
-                            <option value="heap" disabled>Heap Sort</option>
-                            <option value="insertion" disabled>Insertion Sort</option>
+                            <option value="heap">Heap Sort</option>
+                            <option value="insertion">Insertion Sort</option>
                         </select>
                     </div>
                     <div className="d-inline-block">

@@ -160,7 +160,7 @@ function partition(arr, start, end, animations){
   return pivotIndex;
 };
 
-export function quickSortArray(arr) {
+export function quickSort(arr) {
   // Creating an array that we'll use as a stack, using the push() and pop() functions
   const stack = [];
       
@@ -213,9 +213,10 @@ export function getMergeSortAnimations(arr) {
 }
 
 export function mergeSort (arr, startingIdx, firstIteration, animations) {
-  if (arr.length <= 1) return arr;
+  let len = arr.length;
+  if (len <= 1) return arr;
 
-  let mid = Math.floor(arr.length / 2);
+  let mid = Math.floor((len) / 2);
   let left = mergeSort(arr.slice(0, mid), startingIdx, false, animations);
   let right = mergeSort(arr.slice(mid), (startingIdx+mid), false, animations);
 
@@ -260,9 +261,47 @@ export function getHeapSortAnimations(arr) {
     return animations;
   } 
 
+  heapSort(arr, animations);
+
   return animations;
 }
 
+export function heapSort(arr, animations) {
+  let len = arr.length;
+
+  for (var i = Math.floor(len / 2); i >= 0; i -= 1)      {
+      heap_root(arr, i, len);
+    }
+
+  for (i = arr.length - 1; i > 0; i--) {
+      swap(arr, 0, i);
+      len--;
+    
+    
+      heap_root(arr, 0, len);
+  }
+
+  return arr;
+}
+
+function heap_root(arr, i, len) {
+  var left = 2 * i + 1;
+  var right = 2 * i + 2;
+  var max = i;
+
+  if (left < len && arr[left] > arr[max]) {
+      max = left;
+  }
+
+  if (right < len && arr[right] > arr[max])     {
+      max = right;
+  }
+
+  if (max !== i) {
+      swap(arr, i, max);
+      heap_root(arr, max, len);
+  }
+}
 
 
 //=========================== INSERTION SORT ===========================
@@ -274,5 +313,30 @@ export function getInsertionSortAnimations(arr) {
     return animations;
   } 
 
+  insertionSort(arr, animations);
+
   return animations;
+}
+
+export function insertionSort(arr, animations) {
+  let len = arr.length;
+  for (let i = 1; i < len; i++) {
+    // Choosing the first element in our unsorted subarray
+    let current = arr[i];
+
+    // The last element of our sorted subarray
+    let j = i-1; 
+
+    animations.push([j, j+1, 0]);
+    while ((j > -1) && (current < arr[j])) {
+      
+      animations.push([j, j+1, 1]);
+      
+      swap(arr, j, j+1);
+      j--;
+      animations.push([j, j+1, 0]);
+    }
+  }
+
+  return arr;
 }
