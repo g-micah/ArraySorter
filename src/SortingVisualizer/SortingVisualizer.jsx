@@ -93,18 +93,18 @@ export default class SortingVisualizer extends React.Component {
         //Create new arrays and update visual
         const array = [];
         for (let i = 0; i < parseInt(size); i++) {
-            array.push(randomIntFromInterval(275, 1000));
+            array.push(randomIntFromInterval(30, 980));
         }
-        this.width = (94 /  parseInt(size));
+        this.width = (98 /  parseInt(size));
         if(size <= 10){
             this.barMargin = 10;
         } else if (size <= 20) {
             this.barMargin = 6;
         } else if (size <= 40) {
             this.barMargin = 3;
-        } else if (size <= 80) {
+        } else if (size <= 70) {
             this.barMargin = 1.5;
-        } else if (size <= 150) {
+        } else if (size <= 100) {
             this.barMargin = 1;
         } else {
             this.barMargin = 0.5;
@@ -128,7 +128,7 @@ export default class SortingVisualizer extends React.Component {
     //clear all bars color
     clearBarsColor() {
 
-        const arrayBars = document.getElementsByClassName('array-bar');
+        const arrayBars = document.getElementsByClassName('sort-bars');
         for (let x = 0; x < arrayBars.length; x++) {
             arrayBars[x].style.backgroundColor = UNSORTED_COLOR;
         }
@@ -195,7 +195,7 @@ export default class SortingVisualizer extends React.Component {
      *  - 4, swapShift: Swap values at 2 var indexes then insert right value directly next to left value and shift
      */
     displayAnimations(animations){
-        const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/this.state.speedMultiplier;
+        const speed = (Math.pow(1/(this.state.arrSize), 2) * 50000)/(this.state.speedMultiplier*this.state.speedMultiplier);
 
         let actionCount = animations.length;
         let skipTiming = [];
@@ -208,13 +208,18 @@ export default class SortingVisualizer extends React.Component {
         }
         //console.log("actions: "+actionCount+"\nlength: "+animations.length);
 
+        let timeAdj = 0;
+
         for (let i = 0; i < animations.length; i++) {
-            const arrayBars = document.getElementsByClassName('array-bar');
+            const arrayBars = document.getElementsByClassName('sort-bars');
             const [var1, var2, action] = animations[i];
 
-            let actionNum = i;
+            
             for (let j = 0; j < skipTiming.length; j++) {
-                actionNum++;
+                if (i === skipTiming[j]) {
+                    timeAdj--;
+                    break;
+                }
             }
 
             this.timeouts.push(setTimeout(() => {
@@ -270,8 +275,8 @@ export default class SortingVisualizer extends React.Component {
 
                     //insert
                     case 3:
-                        arrayBars[var1].style.backgroundColor = SWAP_COLOR;
-                        arrayBars[var1].style.height = "max(calc("+var2/10+"vh - 115px), 1px)"
+                        //arrayBars[var1].style.backgroundColor = SWAP_COLOR;
+                        //arrayBars[var1].style.height = "max(calc("+var2/10+"vh - 115px), 1px)"
                         break;
 
                     //swapShift
@@ -313,18 +318,15 @@ export default class SortingVisualizer extends React.Component {
                 }
 
 
-            }, i * speed)); 
+            }, (i+timeAdj) * speed)); 
 
         }
         //Runs at the end of sorting animation
         this.timeouts.push(setTimeout(() => {
             this.sortingButtonsEnabled(true);
             this.sorting = false;
+            this.forceUpdate();
         }, actionCount * speed));
-
-        this.timeouts.push(setTimeout(() => {
-           this.forceUpdate();
-        }, (actionCount+1) * speed));
     }
 
     testSortingAlgorithms(){
@@ -365,10 +367,9 @@ export default class SortingVisualizer extends React.Component {
         return (
             <section className="sorting-visualizer overflow-hidden" id="sorting-visualizer">
                 <nav className="navbar navbar-expand navbar-dark bg-dark">
-                <div className="container-sm">
+                <div className="container-xl">
                 <div className="navbar-brand"><b>Array Sorter</b></div>
                     <ul className="navbar-nav">
-                    <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.forceUpdate()}>F</button>
                     <li className="nav-item">
                         <button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.resetArray(this.state.arrSize)}>New Array</button>
                     </li>
@@ -378,8 +379,8 @@ export default class SortingVisualizer extends React.Component {
                     </ul>
                 </div>
                 </nav>
-                <div className="container">
-                <div className="row justify-content-center d-flex">
+                <div className="container-xl adjust">
+                <div className="row justify-content-center">
                 <div className="table-responsive">
                 <table className="table text-align-center"><tbody>
                 <tr className="text-nowrap"><th scope="row">
@@ -400,15 +401,15 @@ export default class SortingVisualizer extends React.Component {
                             <option value="14">14</option>
                             <option value="32">32</option>
                             <option value="75">75</option>
-                            <option value="130">130</option>
-                            <option value="200">200</option>
-                            <option value="400">400</option>
+                            <option value="140">140</option>
+                            <option value="350">350</option>
+                            <option value="700">700</option>
                         </select>
                     </div>
                     <div className="d-inline-block">
                         <label htmlFor="speed">Speed</label>
                         <select className="form-select other-select sort-button" id="speed" value={this.state.speedMultiplier} onChange={this.handleSpeedChange}>
-                        <option value="0.1">0.1x</option>
+                            <option value="0.1">0.1x</option>
                             <option value="0.3">0.3x</option>
                             <option value="0.5">0.5x</option>
                             <option value="1">1x</option>
@@ -422,19 +423,31 @@ export default class SortingVisualizer extends React.Component {
                 </tbody></table>
                 </div>
 
-                <div className="array-container mt-auto table-responsive">
+                <div className="array-container table-responsive">
                     <table className="table text-align-center"><tbody>
-                    <tr className="text-nowrap"><th scope="row">
+                    <tr className="text-nowrap"><th scope="row" className="align-bottom">
+
+                    <div
+                                className="array-bar"
+                                key='-1'
+                                style=
+                                {{
+                                    height: `calc(100% - 6px)`,
+                                    width: `0px`,
+                                    margin: `0px 0px`,
+                                }}
+                            ></div>
+
                         {array.map((value, idx) => (
                             <div
-                                className="array-bar"
+                                className="array-bar sort-bars"
                                 key={idx}
                                 style=
                                 {{
                                     backgroundColor: UNSORTED_COLOR,
-                                    height: `max(calc(${value/10}vh - 115px), 1px)`,
+                                    height: `max(calc(${value/10}% - 6px), 1px)`,
                                     width: `max(calc(${this.width}% - ${this.barMargin*2}px), 1px)`,
-                                    margin: `0px ${this.barMargin}px`
+                                    margin: `0px ${this.barMargin}px`,
                                 }}
                             ></div>
                         ))}
@@ -447,6 +460,7 @@ export default class SortingVisualizer extends React.Component {
         );
     }
 }
+//                                    height: `max(calc(${value/10}vh - 115px), 1px)`,
 //<button type="button" className="btn btn-sm btn-light text-nowrap" onClick={() => this.testSortingAlgorithm()}>BIGTEST</button>
 
 function randomIntFromInterval(min, max) {
